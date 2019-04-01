@@ -1,6 +1,8 @@
 # THREE-CSGMesh
 Conversion of a CSG library for use with modern THREE.js
 
+Original version: Copyright (c) 2011 Evan Wallace (http://madebyevan.com/), under the MIT license.
+THREE.js rework by thrax
 
 Example usage:
 ```
