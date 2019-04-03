@@ -1,0 +1,135 @@
+<html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<style>
+    body {
+        margin: 0px;
+        border: none;
+        height: 100%;
+        overflow: hidden;
+        font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+        font-size: 24px;
+        font-style: normal;
+        font-variant: normal;
+        font-weight: 700;
+        line-height: 26.4px;
+    }
+</style>
+<head>
+</head>
+<body>
+    <div id='container' style='width:100%;height:100%;'></div>
+</body>
+<script src="https://cdn.rawgit.com/mrdoob/three.js/master/build/three.js"></script>
+<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/renderers/CSS3DRenderer.js"></script>
+<script type="module">
+    import CSG from "./CSGMesh.js"
+
+    let renderer = new THREE.WebGLRenderer()
+    let domElement = renderer.domElement;
+    container.appendChild(domElement)
+    let scene = new THREE.Scene();
+    let camera = new THREE.PerspectiveCamera();
+    camera.position.set(10,10,10)
+    let controls = new THREE.OrbitControls(camera,container)
+
+
+    function mkCanvas(dim) {
+        var canvas = document.createElement('canvas');
+        canvas.width = canvas.height = dim;
+        return canvas;
+    }
+    function makeProceduralTexture(dim,fn){
+        var canv = mkCanvas(dim);
+        var ctx = canv.getContext('2d');
+        var pix = ctx.getImageData(0,0,dim,dim);
+        var u32view = new DataView(pix.data.buffer);
+        var idx = -4;
+        for(var j=0;j<dim;j++)
+        for(var i=0;i<dim;i++)
+            u32view.setUint32(idx+=4,fn(j/dim,i/dim)|0);
+        ctx.putImageData(pix,0,0);
+        var tex = new THREE.Texture(canv);
+        tex.needsUpdate = true;
+        return tex;
+    }
+    var tx = makeProceduralTexture(256,(u,v)=>{
+        var rb = ((Math.random()*128)|0) * (((((u*2)&1)^((v*2)&1))|0)?1:2)
+        return (rb*256)|(rb*256*256)|(rb*256*256*256)|0x000000ff
+    })
+    tx.repeat.set(2,2);
+    tx.wrapS = tx.wrapT = THREE.RepeatWrapping
+
+    let mkMat=(color) => new THREE.MeshStandardMaterial({color:color,roughness:1,metalness:0.8,map:tx});
+    let rnd=(rng)=>((Math.random()*2)-1)*(rng||1)
+    let mkLight = ()=>{
+        let light1 = new THREE.PointLight();
+        light1.position.set(rnd(20),rnd(3)+5,rnd(20))
+        scene.add(light1);
+    }
+    for(var i=0;i<8;i++)mkLight()
+    let box = new THREE.Mesh(new THREE.BoxGeometry(2,2,2),mkMat('grey'))
+    scene.add(box)
+    let sphere = new THREE.Mesh(new THREE.SphereGeometry(1.2,8,8),mkMat('grey'))
+    scene.add(sphere)
+
+    function doCSG(a,b,op,mat){
+        var bspA = CSG.fromMesh( a );
+        var bspB = CSG.fromMesh( b );
+        var bspC = bspA[op]( bspB );
+        var result = CSG.toMesh( bspC, a.matrix );
+        result.material = mat;
+        result.castShadow  = result.receiveShadow = true;
+        return result;
+    }
+
+    let subMaterial = mkMat('red')
+    let intersectMaterial = mkMat('green')
+    let unionMaterial = mkMat('blue');
+    let results = []
+    
+    function recompute(){
+        for(var i=0;i<results.length;i++){
+            var m = results[i]
+            m.parent.remove(m)
+            m.geometry.dispose();
+        }
+        results = [];
+
+        box.updateMatrix();
+        sphere.updateMatrix();
+
+        results.push(doCSG(box,sphere,'subtract',subMaterial))
+        results.push(doCSG(box,sphere,'intersect',intersectMaterial))
+        results.push(doCSG(box,sphere,'union',unionMaterial))
+
+        results.push(doCSG(sphere,box,'subtract',subMaterial))
+        results.push(doCSG(sphere,box,'intersect',intersectMaterial))
+        results.push(doCSG(sphere,box,'union',unionMaterial))
+
+        for(var i=0;i<results.length;i++){
+            var r = results[i];
+            scene.add(r)
+
+            r.position.z += -5 + ((i%3)*5)
+            r.position.x += -5 + (((i/3)|0)*10)
+        }
+    }
+
+    function animate(time){
+        if((domElement.prevWidth!=container.clientWidth)||(domElement.prevHeight!=container.clientHeight)){
+            domElement.prevWidth=container.clientWidth;
+            domElement.prevHeight=container.clientHeight;
+            renderer.setSize(container.clientWidth,container.clientHeight)
+            camera.aspect=container.clientWidth/container.clientHeight;
+            camera.updateProjectionMatrix();
+        }
+        sphere.position.x=Math.sin(time*0.001)*2;
+        sphere.position.z=Math.cos(time*0.0011)*0.5;
+        sphere.position.t=Math.sin(time*-0.0012)*0.5;
+        renderer.render(scene,camera)
+        recompute();
+    }
+    renderer.setAnimationLoop(animate) 
+</script>
