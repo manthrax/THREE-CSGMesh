@@ -1,6 +1,8 @@
 # THREE-CSGMesh
 Conversion of a CSG library for use with modern THREE.js
 
+[![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/CSGScreenShot.png)](#screenshot)
+
 Original version: Copyright (c) 2011 Evan Wallace (http://madebyevan.com/), under the MIT license.
 THREE.js rework by thrax
 
@@ -26,5 +28,4 @@ var meshC = doCSG( meshA,meshB, 'subtract',meshA.material);
 ```
 
 
-[![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/CSGScreenShot.png)](#screenshot)
 
