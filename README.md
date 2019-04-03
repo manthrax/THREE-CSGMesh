@@ -24,3 +24,7 @@ meshB.position.add(new THREE.Vector3( 0.5, 0.5, 0.5);
 
 var meshC = doCSG( meshA,meshB, 'subtract',meshA.material);
 ```
+
+
+[![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/CSGScreenShot.png)](#screenshot)
+
