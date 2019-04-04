@@ -8,10 +8,13 @@ Copyright (c) 2011 Evan Wallace (http://madebyevan.com/), under the MIT license.
 
 THREE.js rework by thrax under MIT license.
 
+Here's a running demo
+http://vectorslave.com/csg/CSGDemo.html
+
 Example usage:
 
 # EXAMPLE 1:
-Make a helper function to streamline the operation... (I may make this a static function in the lib itself)
+Make a helper function to streamline the operation... (I may make this a static function in the lib itself TBD)
 ```
 function doCSG(a,b,op,mat){
    var bspA = CSG.fromMesh( a );
