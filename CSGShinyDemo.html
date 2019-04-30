@@ -1,0 +1,342 @@
+<html>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            margin: 0px;
+            border: none;
+            height: 100%;
+            overflow: hidden;
+            font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+            font-size: 24px;
+            font-style: normal;
+            font-variant: normal;
+            font-weight: 700;
+            line-height: 26.4px;
+        }
+    </style>
+    <head></head>
+    <body>
+        <div id='container' style='width:100%;height:100%;'></div>
+    </body>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/build/three.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/renderers/CSS3DRenderer.js"></script>
+
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/HDRCubeTextureLoader.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/RGBELoader.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/pmrem/PMREMGenerator.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/pmrem/PMREMCubeUVPacker.js"></script>
+
+		<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/postprocessing/EffectComposer.js"></script>
+		<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/postprocessing/RenderPass.js"></script>
+		<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/postprocessing/ShaderPass.js"></script>
+		<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/shaders/CopyShader.js"></script>
+		<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/shaders/LuminosityHighPassShader.js"></script>
+		<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/postprocessing/UnrealBloomPass.js"></script>
+ 
+		<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/shaders/SSAOShader.js"></script>
+ 		<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/postprocessing/SSAOPass.js"></script>
+		<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/shaders/FXAAShader.js"></script>
+
+		<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/SimplexNoise.js"></script>
+
+	<script type="module">
+        
+    import CSG from "./CSGMesh.js"
+
+    let renderer = new THREE.WebGLRenderer({antialias:false})
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.enabled = true;
+
+
+    let domElement = renderer.domElement;
+    container.appendChild(domElement)
+    let scene = new THREE.Scene();
+    let camera = new THREE.PerspectiveCamera();
+    camera.position.set(10,10,10)
+    let controls = new THREE.OrbitControls(camera,container)
+controls.enableDamping = true;
+controls.dampingFactor = 0.98
+
+
+let ssaoPass;
+let fxaaPass;
+function setupPostProcessing(){
+    var bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+    bloomPass.threshold = 0.99;//0.85;   0,1.5,0
+    bloomPass.strength = 1.5;
+    bloomPass.radius = 0.0;//0.02;
+
+    renderer.toneMappingExposure = 1.0;//0.5;//2.3;
+
+    var renderScene = new THREE.RenderPass( scene, camera );
+
+    let composer = new THREE.EffectComposer( renderer );
+    composer.setSize( window.innerWidth, window.innerHeight );
+
+    composer.addPass( renderScene );
+
+    fxaaPass = new THREE.ShaderPass( THREE.FXAAShader );
+
+    renderer.setPixelRatio(1);
+    
+    var pixelRatio = renderer.getPixelRatio();
+
+	let width = window.innerWidth;
+	let height = window.innerHeight;
+let copyPass = new THREE.ShaderPass(THREE.CopyShader);
+
+	ssaoPass = new THREE.SSAOPass( scene, camera, width, height );
+	ssaoPass.minDistance = 0.005;
+	ssaoPass.maxDistance = 0.28;
+	ssaoPass.kernelRadius = 10.1;
+	
+    fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / ( width * pixelRatio );
+    fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / ( window.innerHeight * pixelRatio );
+
+
+//bloomPass.renderToScreen = false;
+
+composer.addPass( fxaaPass );
+
+//ssaoPass.clear = false;
+//composer.addPass( ssaoPass );
+
+//composer.addPass( copyPass );
+
+composer.addPass( bloomPass );
+
+   //renderer.toneMapping = THREE.ReinhardToneMapping;
+    return composer
+}
+let composer = setupPostProcessing();
+
+function loadHDR(dir){
+    var hdrCubeRenderTarget;
+    var hdrCubeMap;
+    var hdrUrls = [ 'px.hdr', 'nx.hdr', 'py.hdr', 'ny.hdr', 'pz.hdr', 'nz.hdr' ];
+    dir = dir || 'san_guiseppe_bridge'
+    hdrCubeMap = new THREE.HDRCubeTextureLoader()
+        .setPath( './assets/'+dir+'/' )
+        .load( THREE.UnsignedByteType, hdrUrls, function () {
+
+            var pmremGenerator = new THREE.PMREMGenerator( hdrCubeMap );
+            pmremGenerator.update( renderer );
+
+            var pmremCubeUVPacker = new THREE.PMREMCubeUVPacker( pmremGenerator.cubeLods );
+            pmremCubeUVPacker.update( renderer );
+
+            hdrCubeRenderTarget = pmremCubeUVPacker.CubeUVRenderTarget;
+
+            hdrCubeMap.magFilter = THREE.LinearFilter;
+            hdrCubeMap.needsUpdate = true;
+
+            pmremGenerator.dispose();
+            pmremCubeUVPacker.dispose();
+
+            scene.background = hdrCubeMap;
+
+
+        var newEnvMap = hdrCubeRenderTarget ? hdrCubeRenderTarget.texture : null;
+
+
+        if(true)
+        scene.traverse(e=>{if(e.isMesh){
+            e.material.envMap = newEnvMap;
+            e.material.needsUpdate = true;
+            e.material.roughness = 0.7;
+            e.material.metalness = 0.7;
+            //e.material.flatShading = true;
+            e.castShadow = e.receiveShadow = true;
+            //if(e.name!=='ground')e.material.wireframe = true;
+            }})
+    } );
+    return {cubeMap:hdrCubeMap,cubeRenderTarget:hdrCubeRenderTarget}
+}
+
+let hdr=loadHDR()
+
+    function mkCanvas(dim) {
+        var canvas = document.createElement('canvas');
+        canvas.width = canvas.height = dim;
+        return canvas;
+    }
+    function makeProceduralTexture(dim,fn){
+        var canv = mkCanvas(dim);
+        var ctx = canv.getContext('2d');
+        var pix = ctx.getImageData(0,0,dim,dim);
+        var u32view = new DataView(pix.data.buffer);
+        var idx = -4;
+        for(var j=0;j<dim;j++)
+        for(var i=0;i<dim;i++)
+            u32view.setUint32(idx+=4,fn(j/dim,i/dim)|0);
+        ctx.putImageData(pix,0,0);
+        var tex = new THREE.Texture(canv);
+        tex.needsUpdate = true;
+        return tex;
+    }
+    var tx = makeProceduralTexture(1024,(u,v)=>{
+        var rb = ((Math.random()*128)|0) * (((((u*2)&1)^((v*2)&1))|0)?1:2)
+        return (rb*256)|(rb*256*256)|(rb*256*256*256)|0x000000ff
+    })
+    tx.repeat.set(2,2);
+    tx.wrapS = tx.wrapT = THREE.RepeatWrapping
+
+    //let mkMat=(color) => new THREE.MeshStandardMaterial({color:color,roughness:0.51,metalness:0.7,map:tx});
+    let mkMat=(color) => new THREE.MeshStandardMaterial({color:color,roughness:0.51,metalness:0.7,roughnessMap:tx});
+    let rnd=(rng)=>((Math.random()*2)-1)*(rng||1)
+    /*let mkLight = ()=>{
+        let light1 = new THREE.PointLight();
+        light1.position.set(rnd(20),rnd(3)+5,rnd(20))
+        scene.add(light1);
+    }
+    
+    for(var i=0;i<4;i++)mkLight()*/
+    
+
+    let light1 = new THREE.DirectionalLight();
+    light1.position.set(2.8,12,-15)
+    light1.castShadow = true;
+    var setShadowSize=(sz,mapSz)=>{
+        light1.shadow.camera.left = sz;
+        light1.shadow.camera.bottom = sz;
+        light1.shadow.camera.right = -sz;
+        light1.shadow.camera.top = -sz;
+        if(mapSz){
+            light1.shadow.mapSize.set(mapSz,mapSz)
+        }
+    }
+    setShadowSize(15,1024);
+    scene.add(light1)
+
+
+
+    
+    let ground = new THREE.Mesh(new THREE.BoxGeometry(20,1,20),mkMat('grey'))
+    scene.add(ground)
+    ground.position.y-=1.5;
+    ground.name='ground'
+
+    ground.material.roughnessMap = ground.material.roughnessMap.clone();
+    ground.material.roughnessMap.repeat.set(8,8)
+    ground.material.roughnessMap.needsUpdate = true;
+
+    let box = new THREE.Mesh(new THREE.BoxGeometry(2,2,2),mkMat('grey'))
+    scene.add(box)
+
+
+    let sphere = new THREE.Mesh(new THREE.SphereGeometry(1.2,8,8),mkMat('grey'))
+    let cylinder = new THREE.Mesh(new THREE.CylinderGeometry(1.2,0.8,2.2,8,8),mkMat('grey'))
+    let tsz = 1.0
+    let torusKnot = new THREE.Mesh(new THREE.TorusKnotGeometry( tsz, tsz*0.33, 20,3 ),mkMat('grey'))
+    let subBox = box.clone()
+    let subMesh = sphere;//subBox;//torusKnot;//sphere;
+
+    scene.add(subMesh)
+
+
+	let light2 = new THREE.PointLight('blue',4,10,1);
+	scene.add(light2)
+	light2.position.set(5,5,5)
+	var lightSphere = sphere.clone();
+
+	light2.add(lightSphere)
+	lightSphere.material = lightSphere.material.clone();
+	//lightSphere.material.map = undefined;
+//	lightSphere.material.color.set('lightblue')
+	lightSphere.material.emissive.set('lightblue')
+	//lightSphere.material.emissive.multiplyScalar(30)
+	lightSphere.scale.multiplyScalar(0.1)
+
+    function doCSG(a,b,op,mat){
+        var bspA = CSG.fromMesh( a );
+        var bspB = CSG.fromMesh( b );
+        var bspC = bspA[op]( bspB );
+        var result = CSG.toMesh( bspC, a.matrix );
+        result.material = mat;
+        result.castShadow  = result.receiveShadow = true;
+        return result;
+    }
+
+    let subMaterial = mkMat('pink')
+    let intersectMaterial = mkMat('lightgreen')
+    let unionMaterial = mkMat('lightblue');
+    let results = []
+    
+    function recompute(){
+        for(var i=0;i<results.length;i++){
+            var m = results[i]
+            m.parent.remove(m)
+            m.geometry.dispose();
+        }
+        results = [];
+
+        box.updateMatrix();
+        subMesh.updateMatrix();
+
+        results.push(doCSG(box,subMesh,'subtract',subMaterial))
+        results.push(doCSG(box,subMesh,'intersect',intersectMaterial))
+        results.push(doCSG(box,subMesh,'union',unionMaterial))
+
+        results.push(doCSG(subMesh,box,'subtract',subMaterial))
+        results.push(doCSG(subMesh,box,'intersect',intersectMaterial))
+        results.push(doCSG(subMesh,box,'union',unionMaterial))
+
+        for(var i=0;i<results.length;i++){
+            var r = results[i];
+            scene.add(r)
+
+            r.position.z += -5 + ((i%3)*5)
+            r.position.x += -5 + (((i/3)|0)*10)
+
+        }
+    }
+    function checkForResize(){
+        if((domElement.prevWidth!=container.clientWidth)||(domElement.prevHeight!=container.clientHeight)){
+        	let width = container.clientWidth;
+        	let height = container.clientHeight
+            domElement.prevWidth=width;
+            domElement.prevHeight=height;
+            renderer.setSize(width,height,true)
+            composer.setSize(width,height)
+            camera.aspect=width/height;
+            camera.updateProjectionMatrix();
+            ssaoPass.setSize(width,height)
+            var pixelRatio = renderer.getPixelRatio()
+			fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / ( width * pixelRatio );
+			fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / ( height * pixelRatio );
+        }
+
+    }
+
+
+	
+    function dynamicExposure(){
+
+    }
+
+    function animate(time){
+    	checkForResize();
+        subMesh.position.y=0.25
+        var tm = time*0.001;
+        subMesh.position.x=Math.sin(tm*0.1)*2;
+        subMesh.position.z=Math.cos(tm*0.1)*0.5;
+        subMesh.position.t=Math.sin(tm*-0.2)*0.5;
+
+        subMesh.rotation.x+=subMesh.position.t*0.02;
+        subMesh.rotation.z+=subMesh.position.t*0.021;
+
+        light2.position.x=Math.sin(tm*0.31)*5;
+        light2.position.z=Math.cos(tm*0.53)*7;
+        light2.position.y=(Math.cos(tm*0.42)*4)+6;
+
+        //renderer.render(scene,camera)
+	    composer.render();
+
+        recompute();
+    }
+    renderer.setAnimationLoop(animate) 
+
+    </script>
+    <script src="BufferGeometryOptimizer.js"></script>
