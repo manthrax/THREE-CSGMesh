@@ -419,14 +419,17 @@ CSG.fromGeometry=function(geom){
     }
     return CSG.fromPolygons(polys)
 }
-
+CSG._tmpm3 = new THREE.Matrix3();
 CSG.fromMesh=function(mesh){
+
     var csg = CSG.fromGeometry(mesh.geometry)
+    CSG._tmpm3.getNormalMatrix(mesh.matrix);
     for(var i=0;i<csg.polygons.length;i++){
         var p = csg.polygons[i]
         for(var j=0;j<p.vertices.length;j++){
             var v=p.vertices[j]
             v.pos.applyMatrix4(mesh.matrix);
+            v.normal.applyMatrix3(CSG._tmpm3);
         }
     }
     return csg;
