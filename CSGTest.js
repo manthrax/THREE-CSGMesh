@@ -1,6 +1,6 @@
-import * as THREE from "https://cdn.rawgit.com/mrdoob/three.js/master/build/three.module.js"
-import {OrbitControls} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/controls/OrbitControls.js"
-import {CSS3DRenderer} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/renderers/CSS3DRenderer.js"
+import * as THREE from "./lib/three.module.js"
+import {OrbitControls} from "./lib/jsm/OrbitControls.js"
+//import {CSS3DRenderer} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/renderers/CSS3DRenderer.js"
 
 import {HDRCubeTextureLoader} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/loaders/HDRCubeTextureLoader.js"
 import {RGBELoader} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/loaders/RGBELoader.js"
@@ -31,7 +31,7 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.shadowMap.enabled = true;
 //renderer.gammaInput = true;
 //renderer.gammaOutput = true;
-renderer.toneMapping = THREE.Uncharted2ToneMapping
+//renderer.toneMapping = THREE.Uncharted2ToneMapping
 //ReinhardToneMapping;//;
 //renderer.toneMappingExposure = 2.0;//0.5;//2.3;
 //renderer.toneMappingWhitePoint = 2.5
@@ -438,8 +438,8 @@ let roundBox = (size,radius,count)=>{
         return result;
     }
 
-    for (let x = 0; x < root.children.length; x++)
-        console.log(root.children[x].userData)
+//    for (let x = 0; x < root.children.length; x++)
+//        console.log(root.children[x].userData)
     let start = performance.now()
 
     let base = doCSGOperations(root.children, unionMaterial)
