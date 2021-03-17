@@ -303,7 +303,7 @@ class FCAD {
                 return tm
             }
 
-            glbLoader.load('SignetRing.glb', (glb)=>{
+            glbLoader.load('Blonk.glb', (glb)=>{
                 glbLoader.load('Text2.glb', (glbt)=>{
 
                     let genMS = performance.now()
@@ -319,7 +319,7 @@ class FCAD {
                     glbt.scene.traverse(e=>e.isMesh && (meshes.push(e) && (e.material = mm)))
 
                     let ringMesh = meshes[0]
-                    ringMesh.scale.multiplyScalar(.1)
+                    ringMesh.scale.multiplyScalar(.58)
                     let textMesh = meshes[1]
                     textMesh.position.x -= .6
                     textMesh.position.z += -.2

@@ -112,7 +112,7 @@ self.resize=(width,height)=>{
             .setPath( '' )
             
             //.load( 'venice_sunset_2k.hdr', 
-            .load( 'reichstag_1_2k.hdr', 
+            .load( '../assets/san_giuseppe_bridge_4k.hdr', 
                 
 
                 function ( texture ) {

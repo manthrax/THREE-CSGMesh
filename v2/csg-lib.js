@@ -377,11 +377,9 @@ class Node {
         for (var i = 0; i < this.polygons.length; i++)
             this.polygons[i].flip();
         
-        this.plane.flip();
-        if (this.front)
-            this.front.invert();
-        if (this.back)
-            this.back.invert();
+        this.plane && this.plane.flip();
+        this.front && this.front.invert();
+        this.back && this.back.invert();
         var temp = this.front;
         this.front = this.back;
         this.back = temp;
