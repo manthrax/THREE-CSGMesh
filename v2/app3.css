@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+canvas {
+    display: block;
+}
+
+button {
+    background: black;
+    opacity: .5;
+    border: none;
+    color: white;
+}
+
+#mainDiv {
+    position: absolute;
+    z-index: 10;
+    left: 10px;
+    top: 50px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    background: rgba(50,50,50,.5);
+}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Three.js CSG Toy</title><head>  
+    <link rel="stylesheet" href="app3.css">
+  </head>
+  <body>
+    <script type="module" src="csg-toy.js"></script>
+    <script type="module" src="app3.js"></script>
+    <div id='mainDiv'>
+    <button>close</button>
+    </br>
+    simplify:<input type='range' min='0' max='1000' value='0' id='simpFactor'></input></br>
+    grid:<input type='checkbox'></input></br>
+    op:<button id='csgSubtract' style='background:red'>subtract</button>
+    <button id='csgUnion' style='background:green'>union</button>
+    <button id='csgIntersect' style='background:purple'>intersect</button></br>
+    add:<button id='csgAddBox' style='background:orange'>box</button>
+    <button id='csgAddSphere' style='background:orange'>sphere</button>
+    <button id='csgAddCylinder' style='background:orange'>cylinder</button></br>
+    order:<input type='range' min='0' max='1000' value='1000' id='elemIndexSlider'></input></br>
+    <div  id='codeView' style='font-family: Courier;font-size: 9pt;height:15px;overflow:hidden;'>
+        [code]
+    </div>
+    </div>
+  </body>
+</html>
