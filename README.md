@@ -11,6 +11,10 @@ THREE.js rework by thrax under MIT license.
 Here's a running demo
 http://vectorslave.com/csg/CSGDemo.html
 
+
+And a shinier, slightly more complex demo:
+http://vectorslave.com/csg/CSGShinyDemo.html
+
 CSG is the name of a technique for generating a new geometry as a function of two input geometries.
 
 CSG is sometimes referred to as "Boolean" operators in 3d modelling packages.
