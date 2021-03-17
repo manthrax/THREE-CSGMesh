@@ -1,5 +1,6 @@
 "use strict"
 
+import * as THREE from "./lib/three.module.js" 
 // ## License
 // 
 // Copyright (c) 2011 Evan Wallace (http://madebyevan.com/), under the MIT license.
@@ -65,6 +66,22 @@ class CSG {
         return CSG.fromPolygons(a.allPolygons());
     }
 
+    difference(csg) {
+        var a = new Node(this.clone().polygons);
+        var b = new Node(csg.clone().polygons);
+        //a.invert();
+        a.clipTo(b);
+        b.clipTo(a);
+        //b.invert();
+        //b.clipTo(a);
+        //b.invert();
+
+        
+        a.build(b.allPolygons());
+        a.invert();
+        return CSG.fromPolygons(a.allPolygons());
+    }
+
     // Return a new CSG solid with solid and empty space switched. This solid is
     // not modified.
     inverse() {
@@ -93,6 +110,7 @@ CSG.fromPolygons=function(polygons) {
 //     new CSG.Vector([1, 2, 3]);
 //     new CSG.Vector({ x: 1, y: 2, z: 3 });
 
+
 class Vector extends THREE.Vector3 {
     constructor(x, y, z) {
         if (arguments.length == 3)
@@ -100,7 +118,7 @@ class Vector extends THREE.Vector3 {
         else if (Array.isArray(x))
             super(x[0], x[1], x[2])
         else if (typeof x == 'object')
-            super().copy(x)
+            super(x.x,x.y,x.z)
         else
             throw "Invalid constructor to vector"
     }
@@ -146,7 +164,7 @@ class Vector extends THREE.Vector3 {
 
 class Vertex {
 
-    constructor(pos, normal, uv) {
+    constructor(pos, normal, uv) {        
         this.pos = new Vector(pos);
         this.normal = new Vector(normal);
         this.uv = new Vector(uv);
@@ -170,6 +188,7 @@ class Vertex {
     }
 }
 ;
+
 // # class Plane
 
 // Represents a plane in 3D space.
@@ -471,7 +490,7 @@ CSG.toMesh=function(csg,toMatrix){
         }
     }
     var inv = new THREE.Matrix4().getInverse(toMatrix);
-    geom.applyMatrix(inv);
+    geom.applyMatrix4(inv);
     geom.verticesNeedUpdate = geom.elementsNeedUpdate = geom.normalsNeedUpdate = true;
     geom.computeBoundingSphere();
     geom.computeBoundingBox();
