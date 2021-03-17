@@ -1,10 +1,6 @@
 # THREE-CSGMesh
 Conversion of a CSG - (Constructive Solid Geometry) library for use with modern THREE.js
 
-[![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/CSGScreenShot.png)](#screenshot)
-
-
-[![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/CSGShinyScreenshot.jpg)](#screenshot)
 
 Original version: 
 Copyright (c) 2011 Evan Wallace (http://madebyevan.com/), under the MIT license.
@@ -14,9 +10,14 @@ THREE.js rework by thrax under MIT license.
 Here's a running demo
 http://vectorslave.com/csg/CSGDemo.html
 
+[![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/CSGScreenShot.png)](#screenshot)
+
+
 
 And a shinier, slightly more complex demo:
 http://vectorslave.com/csg/CSGShinyDemo.html
+
+[![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/CSGShinyScreenshot.jpg)](#screenshot)
 
 CSG is the name of a technique for generating a new geometry as a function of two input geometries.
 
