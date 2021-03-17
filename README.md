@@ -3,6 +3,9 @@ Conversion of a CSG - (Constructive Solid Geometry) library for use with modern 
 
 [![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/CSGScreenShot.png)](#screenshot)
 
+
+[![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/CSGShinyScreenShot.jpg)](#screenshot)
+
 Original version: 
 Copyright (c) 2011 Evan Wallace (http://madebyevan.com/), under the MIT license.
 
