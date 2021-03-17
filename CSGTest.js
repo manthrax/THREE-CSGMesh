@@ -33,7 +33,7 @@ renderer.shadowMap.enabled = true;
 //renderer.gammaOutput = true;
 //renderer.toneMapping = THREE.Uncharted2ToneMapping
 //ReinhardToneMapping;//;
-//renderer.toneMappingExposure = 2.0;//0.5;//2.3;
+renderer.toneMappingExposure = 2.3;//0.5;//2.3;
 //renderer.toneMappingWhitePoint = 2.5
 
 let domElement = renderer.domElement;
