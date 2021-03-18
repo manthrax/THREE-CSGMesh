@@ -357,7 +357,7 @@ class FCAD {
         localStorage.csgscene = JSON.stringify(this.toJSON());
 
         const loader = new THREE.FontLoader();
-        loader.load('../../../three.js-dev/examples/fonts/helvetiker_regular.typeface.json', function(font) {
+        loader.load('../lib/helvetiker_regular.typeface.json', function(font) {
             let genText = (str)=>{
                 const geometry = new THREE.TextBufferGeometry(str,{
                     font: font,
@@ -379,7 +379,7 @@ class FCAD {
             }
 
             glbLoader.load('Blonk.glb', (glb)=>{
-                glbLoader.load('Text2.glb', (glbt)=>{
+                glbLoader.load('text2.glb', (glbt)=>{
 
                     let genMS = performance.now()
                     let meshes = []
