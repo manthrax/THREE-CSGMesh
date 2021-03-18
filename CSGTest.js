@@ -1,31 +1,28 @@
-import * as THREE from "./lib/three.module.js"
+import*as THREE from "./lib/three.module.js"
 import {OrbitControls} from "./lib/jsm/OrbitControls.js"
 //import {CSS3DRenderer} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/renderers/CSS3DRenderer.js"
 
-import {HDRCubeTextureLoader} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/loaders/HDRCubeTextureLoader.js"
-import {RGBELoader} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/loaders/RGBELoader.js"
+import {HDRCubeTextureLoader} from "./lib/jsm/HDRCubeTextureLoader.js"
+import {RGBELoader} from "./lib/jsm/RGBELoader.js"
 //import {PMREMGenerator} from  "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/pmrem/PMREMGenerator.js"
 //import {PMREMCubeUVPacker} from  "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/pmrem/PMREMCubeUVPacker.js"
 
-import {EffectComposer} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/postprocessing/EffectComposer.js"
-import {RenderPass} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/postprocessing/RenderPass.js"
-import {ShaderPass} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/postprocessing/ShaderPass.js"
-import {CopyShader} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/shaders/CopyShader.js"
-import {LuminosityHighPassShader} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/shaders/LuminosityHighPassShader.js"
-import {UnrealBloomPass} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/postprocessing/UnrealBloomPass.js"
+import {EffectComposer} from "./lib/jsm/postprocessing/EffectComposer.js"
+import {RenderPass} from "./lib/jsm/postprocessing/RenderPass.js"
+import {ShaderPass} from "./lib/jsm/postprocessing/ShaderPass.js"
+import {CopyShader} from "./lib/jsm/shaders/CopyShader.js"
+import {LuminosityHighPassShader} from "./lib/jsm/shaders/LuminosityHighPassShader.js"
+import {UnrealBloomPass} from "./lib/jsm/postprocessing/UnrealBloomPass.js"
 
-import {SSAOShader} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/shaders/SSAOShader.js"
-import {SSAOPass} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/postprocessing/SSAOPass.js"
-import {FXAAShader} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/shaders/FXAAShader.js"
+import {SSAOShader} from "./lib/jsm/shaders/SSAOShader.js"
+import {SSAOPass} from "./lib/jsm/postprocessing/SSAOPass.js"
+import {FXAAShader} from "./lib/jsm/shaders/FXAAShader.js"
 
-import {SimplexNoise} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/math/SimplexNoise.js"
-
+import {SimplexNoise} from "./lib/jsm/SimplexNoise.js"
 
 import reindexBufferGeometry from "./BufferGeometryIndexer.js"
 
-
 import CSG from "./three-buffered-csg.js"
-
 
 let renderer = new THREE.WebGLRenderer({
     antialias: true
@@ -36,7 +33,8 @@ renderer.shadowMap.enabled = true;
 //renderer.gammaOutput = true;
 //renderer.toneMapping = THREE.Uncharted2ToneMapping
 //ReinhardToneMapping;//;
-renderer.toneMappingExposure = 2.3;//0.5;//2.3;
+renderer.toneMappingExposure = 2.3;
+//0.5;//2.3;
 //renderer.toneMappingWhitePoint = 2.5
 
 let domElement = renderer.domElement;
@@ -132,8 +130,8 @@ function loadHDR(dir) {
         scene.background = hdrCubeMap;
         var newEnvMap = hdrCubeRenderTarget ? hdrCubeRenderTarget.texture : null;
         scene.environment = newEnvMap;
-renderer.toneMapping = THREE.ReinhardToneMapping;
-renderer.toneMappingExposure = 4;
+        renderer.toneMapping = THREE.ReinhardToneMapping;
+        renderer.toneMappingExposure = 4;
     });
     return {
         cubeMap: hdrCubeMap,
@@ -283,7 +281,6 @@ function recompute() {
     }
 }
 
-
 let roundBox = (size,radius,count)=>{
     let root = new THREE.Group()
     root.position.y = 4;
@@ -393,11 +390,7 @@ let roundBox = (size,radius,count)=>{
 
     let off = .4;
     let sof = 1
-    let dots = [[1, 0, 0], [-1, -off, -off], [-1, off, off],
-    [off, -1, off], [0, -1, 0], [-off, -1, -off],
-    [off, 1, off], [off, 1, -off], [-off, 1, off], [-off, 1, -off],
-    [off, off, 1], [off, -off, 1], [-off, off, 1], [-off, -off, 1], [0, 0, 1],
-    [off, off, -1], [off, -off, -1], [0, off, -1], [0, -off, -1], [-off, off, -1], [-off, -off, -1], ]
+    let dots = [[1, 0, 0], [-1, -off, -off], [-1, off, off], [off, -1, off], [0, -1, 0], [-off, -1, -off], [off, 1, off], [off, 1, -off], [-off, 1, off], [-off, 1, -off], [off, off, 1], [off, -off, 1], [-off, off, 1], [-off, -off, 1], [0, 0, 1], [off, off, -1], [off, -off, -1], [0, off, -1], [0, -off, -1], [-off, off, -1], [-off, -off, -1], ]
     let dsp = sp0.clone()
     dsp.userData.op = 'subtract'
     dsp.position.multiplyScalar((size + radius) / size)
@@ -431,48 +424,42 @@ let roundBox = (size,radius,count)=>{
         return result;
     }
 
-//    for (let x = 0; x < root.children.length; x++)
-//        console.log(root.children[x].userData)
+    //    for (let x = 0; x < root.children.length; x++)
+    //        console.log(root.children[x].userData)
     let start = performance.now()
 
     let base = doCSGOperations(root.children, unionMaterial)
     root.children.length = 0;
 
-let bgeom = base.geometry;
-if(!bgeom.isBufferGeometry){
-    bgeom = new THREE.BufferGeometry().fromGeometry(base.geometry)
-    base.geometry = bgeom
-}
+    let bgeom = base.geometry;
+    if (!bgeom.isBufferGeometry) {
+        bgeom = new THREE.BufferGeometry().fromGeometry(base.geometry)
+        base.geometry = bgeom
+    }
     reindexBufferGeometry(bgeom)
     root.add(base);
-//base.material.wireframe = true
+    //base.material.wireframe = true
     let time = performance.now() - start
     console.log(time / 1000)
 
+    let gplane = new THREE.PlaneGeometry()
+    let p1 = new THREE.Mesh(gplane,unionMaterial)
+    let p2 = new THREE.Mesh(gplane,unionMaterial)
+    p1.position.y += 2
+    p2.position.x += .3
+    p2.position.y += 2.3
+    root.add(p1)
+    root.add(p2)
+    p2.userData.op = 'subtract'
+    let out = doCSGOperations([p1, p2], unionMaterial)
+    root.remove(p1)
+    root.remove(p2)
 
-
-
-
-let gplane = new THREE.PlaneGeometry()
-let p1 = new THREE.Mesh(gplane,unionMaterial)
-let p2 = new THREE.Mesh(gplane,unionMaterial)
-p1.position.y+=2
-p2.position.x+=.3
-p2.position.y+=2.3
-root.add(p1)
-root.add(p2)
-p2.userData.op='subtract'
-let out = doCSGOperations([p1,p2],unionMaterial)
-root.remove(p1)
-root.remove(p2)
-
-
-root.add(out)
+    root.add(out)
 
 }
 
 roundBox(1, .2, 2)
-
 
 function checkForResize() {
     if ((domElement.prevWidth != container.clientWidth) || (domElement.prevHeight != container.clientHeight)) {
@@ -484,7 +471,7 @@ function checkForResize() {
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
         var pixelRatio = renderer.getPixelRatio()
-        if(composer){
+        if (composer) {
             composer.setSize(width, height)
             ssaoPass.setSize(width, height)
             fxaaPass.material.uniforms['resolution'].value.x = 1 / (width * pixelRatio);
@@ -494,8 +481,7 @@ function checkForResize() {
 
 }
 
-function dynamicExposure() {
-}
+function dynamicExposure() {}
 
 var meshIdx = -1;
 let subMesh;
@@ -510,8 +496,7 @@ function animate(time) {
         meshIdx = nextIdx;
         subMesh = subMeshes[meshIdx]
         scene.add(subMesh)
-        subMesh.castShadow=box.castShadow = 
-        subMesh.receiveShadow=box.receiveShadow = true 
+        subMesh.castShadow = box.castShadow = subMesh.receiveShadow = box.receiveShadow = true
     }
 
     subMesh.position.y = 0.25
@@ -526,8 +511,10 @@ function animate(time) {
     light2.position.z = Math.cos(tm * 0.53) * 7;
     light2.position.y = (Math.cos(tm * 0.42) * 4) + 6;
 
-    if(composer)composer.render();
-    else renderer.render(scene,camera)
+    if (composer)
+        composer.render();
+    else
+        renderer.render(scene, camera)
 
     recompute();
 }

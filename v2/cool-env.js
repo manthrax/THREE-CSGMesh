@@ -1,24 +1,24 @@
 import * as THREE from "../lib/three.module.js";
 //import { CSS3DRenderer } from "../../../three.js-dev/examples/jsm/renderers/CSS3DRenderer.js";
 
-import { HDRCubeTextureLoader } from "../../../three.js-dev/examples/jsm/loaders/HDRCubeTextureLoader.js";
-import { RGBELoader } from "../../../three.js-dev/examples/jsm/loaders/RGBELoader.js";
-import { RoughnessMipmapper } from '../../../three.js-dev/examples/jsm/utils/RoughnessMipmapper.js';
+import { HDRCubeTextureLoader } from "../lib/jsm/HDRCubeTextureLoader.js";
+import { RGBELoader } from "../lib/jsm/RGBELoader.js";
+import { RoughnessMipmapper } from '../lib/jsm/RoughnessMipmapper.js';
 //import {PMREMGenerator} from "../three.js-dev/examples/jsm/pmrem/PMREMGenerator.js";
 //import {PMREMCubeUVPacker} from "../three.js-dev/examples/jsm/pmrem/PMREMCubeUVPacker.js";
 
-import { EffectComposer } from "../../../three.js-dev/examples/jsm/postprocessing/EffectComposer.js";
-import { RenderPass } from "../../../three.js-dev/examples/jsm/postprocessing/RenderPass.js";
-import { ShaderPass } from "../../../three.js-dev/examples/jsm/postprocessing/ShaderPass.js";
-import { CopyShader } from "../../../three.js-dev/examples/jsm/shaders/CopyShader.js";
-import { LuminosityHighPassShader } from "../../../three.js-dev/examples/jsm/shaders/LuminosityHighPassShader.js";
-import { UnrealBloomPass } from "../../../three.js-dev/examples/jsm/postprocessing/UnrealBloomPass.js";
-import { FXAAShader } from "../../../three.js-dev/examples/jsm/shaders/FXAAShader.js";
+import { EffectComposer } from "../lib/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "../lib/jsm/postprocessing/RenderPass.js";
+import { ShaderPass } from "../lib/jsm/postprocessing/ShaderPass.js";
+import { CopyShader } from "../lib/jsm/shaders/CopyShader.js";
+import { LuminosityHighPassShader } from "../lib/jsm/shaders/LuminosityHighPassShader.js";
+import { UnrealBloomPass } from "../lib/jsm/postprocessing/UnrealBloomPass.js";
+import { FXAAShader } from "../lib/jsm/shaders/FXAAShader.js";
 
-import { SSAOShader } from "../../../three.js-dev/examples/jsm/shaders/SSAOShader.js";
-import { SSAOPass } from "../../../three.js-dev/examples/jsm/postprocessing/SSAOPass.js";
+import { SSAOShader } from "../lib/jsm/shaders/SSAOShader.js";
+import { SSAOPass } from "../lib/jsm/postprocessing/SSAOPass.js";
 
-import { SimplexNoise } from "../../../three.js-dev/examples/jsm/math/SimplexNoise.js";
+import { SimplexNoise } from "../lib/jsm/SimplexNoise.js";
 
 class Environment {
   constructor(renderer, scene, camera) {
