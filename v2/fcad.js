@@ -1,5 +1,5 @@
 import*as THREE from "../lib/three.module.js";
-import CSG from "../three-buffered-csg.js";
+import CSG from "../three-csg.js";
 //import {ConvexGeometry} from "../lib/jsm/ConvexGeometry.js";
 
 import {GLTFLoader} from "../lib/jsm/GLTFLoader.js"

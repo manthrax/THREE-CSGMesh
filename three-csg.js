@@ -3,9 +3,10 @@
 import*as THREE from "./lib/three.module.js";
 let { BufferGeometry, Vector3, Vector2} = THREE;
 
-//import {Geometry} from "../three.js-dev/examples/jsm/deprecated/Geometry.js";
 
 import {CSG, Vertex, Vector, Polygon} from "./csg-lib.js"
+
+//import {Geometry} from "../three.js-dev/examples/jsm/deprecated/Geometry.js";
 
 CSG.fromGeometry = function(geom) {
     //   if (geom.isBufferGeometry)

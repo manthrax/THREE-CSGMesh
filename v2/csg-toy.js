@@ -2,7 +2,7 @@ import * as THREE from '../lib/three.module.js';
 import {SimplifyModifier} from '../lib/jsm/SimplifyModifier.js';
 //import CanvasRecorder from "./canvas-recorder.js"
 import UI from "./ui.js"
-import CSG from "../three-buffered-csg.js";
+import CSG from "../three-csg.js";
 import FCAD from "./fcad.js";
 
 document.addEventListener('init', (e)=>{

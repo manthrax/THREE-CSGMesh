@@ -22,7 +22,7 @@ import {SimplexNoise} from "./lib/jsm/SimplexNoise.js"
 
 import reindexBufferGeometry from "./BufferGeometryIndexer.js"
 
-import CSG from "./three-buffered-csg.js"
+import CSG from "./three-csg.js"
 
 let renderer = new THREE.WebGLRenderer({
     antialias: true
