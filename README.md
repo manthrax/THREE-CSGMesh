@@ -46,30 +46,12 @@ Example usage:
 
 # EXAMPLE 0:
 ```
-//Minimal example..
+//Minimal example.. subtract mesh b from mesh a:
 import {CSG} from "three-csg.js"
 scene.add(CSG.toMesh(CSG.subtract(CSG.fromMesh(a),CSG.fromMesh(b)),a.material))
 ```
 
-# EXAMPLE 1:
-Make a helper function to streamline the operation... (I may make this a static function in the lib itself TBD)
-```
-function doCSG(a,b,op,mat){
-   var bspA = CSG.fromMesh( a );
-   var bspB = CSG.fromMesh( b );
-   var bspC = bspA[op]( bspB );
-   var result = CSG.toMesh( bspC, a.matrix );
-   result.material = mat;
-   result.castShadow  = result.receiveShadow = true;
-   return result;
-}
-var meshA = new THREE.Mesh(new THREE.BoxGeometry(1,1,1));
-var meshB = new THREE.Mesh(new THREE.BoxGeometry(1,1,1));
-meshB.position.add(new THREE.Vector3( 0.5, 0.5, 0.5);
-var meshC = doCSG( meshA,meshB, 'subtract',meshA.material);
-```
-
-# EXAMPLE 2. Verbose... step by step..
+# EXAMPLE 1. Verbose... step by step..
 ```
 
 // Make 2 box meshes.. 
@@ -83,7 +65,7 @@ meshB.position.add(new THREE.Vector3( 0.5, 0.5, 0.5)
 
 //Make sure the .matrix of each mesh is current
 
-meshA.updateMatrix()                                     
+meshA.updateMatrix()
 meshB.updateMatrix()
 
  //Create a bsp tree from each of the meshes
@@ -95,22 +77,9 @@ var bspB = CSG.fromMesh( meshB )
  
 var bspResult = bspA.subtract(bspB)
 
-//Get the resulting mesh from the result bsp
+//Get the resulting mesh from the result bsp, and assign meshA.material to the resulting mesh
 
-var meshResult = CSG.toMesh( bspResult, meshA.matrix )
-
-//Set the results material to the material of the first cube.
-
-meshResult.material = meshA.material
-
-//The following isn't required but illustrates how to convert the result to a bufferGeometry.
-
- //If the original mesh contained a bufferGeometry,
-if(meshA.geometry.isBufferGeometry)
-    // make the result a bufferGeometry too
-   meshResult.geometry = new THREE.BufferGeometry().fromGeometry(meshResult.geometry)
-
------- EDIT with V2, BufferGeometry will be used internally by default.
+var meshResult = CSG.toMesh( bspResult, meshA.matrix, meshA.material )
 
 ```
 
