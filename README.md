@@ -17,8 +17,10 @@ http://vectorslave.com/csg/demos/CSGShinyDemo.html
 
 [![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/assets/CSGShinyScreenshot.jpg)](#screenshot)
 
-And a more complex example showing cutting a text mesh into another complex mesh:
+And a more complex example showing a text mesh cut into another complex mesh via an intermediate cube:
 http://vectorslave.com/csg/v2/index.html
+
+[![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/assets/v2test.jpg)](#screenshot)
 
 
 CSG is the name of a technique for generating a new geometry as a function of two input geometries.
