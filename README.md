@@ -8,12 +8,12 @@ Copyright (c) 2011 Evan Wallace (http://madebyevan.com/), under the MIT license.
 THREE.js rework by thrax under MIT license.
 
 Here's a running demo
-http://vectorslave.com/csg/CSGDemo.html
+http://vectorslave.com/csg/demos/CSGDemo.html
 
 [![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/assets/CSGScreenShot.png)](#screenshot)
 
 And a shinier, slightly more complex demo:
-http://vectorslave.com/csg/CSGShinyDemo.html
+http://vectorslave.com/csg/demos/CSGShinyDemo.html
 
 [![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/assets/CSGShinyScreenshot.jpg)](#screenshot)
 
@@ -45,9 +45,10 @@ Example usage:
 # EXAMPLE 0:
 ```
 //Minimal example..
-import {CSG} from "three-buffered-csg.js"
+import {CSG} from "three-csg.js"
 scene.add(CSG.toMesh(CSG.subtract(CSG.fromMesh(a),CSG.fromMesh(b)),a.material))
 ```
+
 # EXAMPLE 1:
 Make a helper function to streamline the operation... (I may make this a static function in the lib itself TBD)
 ```

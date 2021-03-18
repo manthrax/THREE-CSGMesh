@@ -1,28 +1,28 @@
-import*as THREE from "./lib/three.module.js"
-import {OrbitControls} from "./lib/jsm/OrbitControls.js"
+import*as THREE from "../lib/three.module.js"
+import {OrbitControls} from "../lib/jsm/OrbitControls.js"
 //import {CSS3DRenderer} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/renderers/CSS3DRenderer.js"
 
-import {HDRCubeTextureLoader} from "./lib/jsm/HDRCubeTextureLoader.js"
-import {RGBELoader} from "./lib/jsm/RGBELoader.js"
+import {HDRCubeTextureLoader} from "../lib/jsm/HDRCubeTextureLoader.js"
+import {RGBELoader} from "../lib/jsm/RGBELoader.js"
 //import {PMREMGenerator} from  "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/pmrem/PMREMGenerator.js"
 //import {PMREMCubeUVPacker} from  "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/pmrem/PMREMCubeUVPacker.js"
 
-import {EffectComposer} from "./lib/jsm/postprocessing/EffectComposer.js"
-import {RenderPass} from "./lib/jsm/postprocessing/RenderPass.js"
-import {ShaderPass} from "./lib/jsm/postprocessing/ShaderPass.js"
-import {CopyShader} from "./lib/jsm/shaders/CopyShader.js"
-import {LuminosityHighPassShader} from "./lib/jsm/shaders/LuminosityHighPassShader.js"
-import {UnrealBloomPass} from "./lib/jsm/postprocessing/UnrealBloomPass.js"
+import {EffectComposer} from "../lib/jsm/postprocessing/EffectComposer.js"
+import {RenderPass} from "../lib/jsm/postprocessing/RenderPass.js"
+import {ShaderPass} from "../lib/jsm/postprocessing/ShaderPass.js"
+import {CopyShader} from "../lib/jsm/shaders/CopyShader.js"
+import {LuminosityHighPassShader} from "../lib/jsm/shaders/LuminosityHighPassShader.js"
+import {UnrealBloomPass} from "../lib/jsm/postprocessing/UnrealBloomPass.js"
 
-import {SSAOShader} from "./lib/jsm/shaders/SSAOShader.js"
-import {SSAOPass} from "./lib/jsm/postprocessing/SSAOPass.js"
-import {FXAAShader} from "./lib/jsm/shaders/FXAAShader.js"
+import {SSAOShader} from "../lib/jsm/shaders/SSAOShader.js"
+import {SSAOPass} from "../lib/jsm/postprocessing/SSAOPass.js"
+import {FXAAShader} from "../lib/jsm/shaders/FXAAShader.js"
 
-import {SimplexNoise} from "./lib/jsm/SimplexNoise.js"
+import {SimplexNoise} from "../lib/jsm/SimplexNoise.js"
 
 import reindexBufferGeometry from "./BufferGeometryIndexer.js"
 
-import CSG from "./three-csg.js"
+import CSG from "../three-csg.js"
 
 let renderer = new THREE.WebGLRenderer({
     antialias: true
@@ -103,7 +103,7 @@ function loadHDR(dir) {
     var hdrUrls = ['px.hdr', 'nx.hdr', 'py.hdr', 'ny.hdr', 'pz.hdr', 'nz.hdr'];
     dir = dir || 'venice_sunset';
     //'san_guiseppe_bridge'
-    hdrCubeMap = new HDRCubeTextureLoader().setPath('./assets/' + dir + '/').setDataType(THREE.UnsignedByteType).load(hdrUrls, function() {
+    hdrCubeMap = new HDRCubeTextureLoader().setPath('../assets/' + dir + '/').setDataType(THREE.UnsignedByteType).load(hdrUrls, function() {
 
         var pmremGenerator = new THREE.PMREMGenerator(renderer);
         pmremGenerator.compileCubemapShader();
