@@ -90,7 +90,6 @@ CSG.fromPolygons=function(polygons) {
 
 
 
-
 class Vector {
     constructor(x=0, y=0, z=0) {
         this.x=x;
@@ -137,7 +136,7 @@ class Vector {
         return this
     }
     lerp(a, t) {
-        return this.add(tvv0.copy(a).sub(this).times(t))
+        return this.add(tv0.copy(a).sub(this).times(t))
     }
     unit() {
         return this.dividedBy(this.length())
@@ -164,14 +163,10 @@ class Vector {
     }
 }
 
-
-let tvv0 = new Vector()
-let tvv1 = new Vector()
-
-
-//let Vector = Vector3
+//Temporaries used to avoid internal allocation..
 let tv0=new Vector()
 let tv1=new Vector()
+
 
 // # class Vertex
 
