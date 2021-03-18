@@ -1,7 +1,5 @@
 import*as THREE from "../lib/three.module.js";
 import CSG from "../three-csg.js";
-//import {ConvexGeometry} from "../lib/jsm/ConvexGeometry.js";
-
 import {GLTFLoader} from "../lib/jsm/GLTFLoader.js"
 import {DRACOLoader} from "../lib/jsm/DRACOLoader.js"
 
@@ -35,76 +33,6 @@ import {
 	Float32BufferAttribute,
 	Geometry
 } from '../lib/three.module.js';
-import { ConvexHull } from '../lib/jsm/ConvexHull.js';
-
-// ConvexGeometry
-
-var ConvexGeometry = function ( points ) {
-
-	Geometry.call( this );
-
-	this.fromBufferGeometry( new ConvexBufferGeometry( points ) );
-	this.mergeVertices();
-
-};
-
-ConvexGeometry.prototype = Object.create( Geometry.prototype );
-ConvexGeometry.prototype.constructor = ConvexGeometry;
-
-// ConvexBufferGeometry
-
-var ConvexBufferGeometry = function ( points ) {
-
-	BufferGeometry.call( this );
-
-	// buffers
-
-	var vertices = [];
-	var normals = [];
-
-	if ( ConvexHull === undefined ) {
-
-		console.error( 'THREE.ConvexBufferGeometry: ConvexBufferGeometry relies on ConvexHull' );
-
-	}
-
-	var convexHull = new ConvexHull().setFromPoints( points );
-
-	// generate vertices and normals
-
-	var faces = convexHull.faces;
-
-	for ( var i = 0; i < faces.length; i ++ ) {
-
-		var face = faces[ i ];
-		var edge = face.edge;
-
-		// we move along a doubly-connected edge list to access all face points (see HalfEdge docs)
-
-		do {
-
-			var point = edge.head().point;
-
-			vertices.push( point.x, point.y, point.z );
-			normals.push( face.normal.x, face.normal.y, face.normal.z );
-
-			edge = edge.next;
-
-		} while ( edge !== face.edge );
-
-	}
-
-	// build geometry
-
-	this.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
-	this.setAttribute( 'normal', new Float32BufferAttribute( normals, 3 ) );
-
-};
-
-ConvexBufferGeometry.prototype = Object.create( BufferGeometry.prototype );
-ConvexBufferGeometry.prototype.constructor = ConvexBufferGeometry;
-
-export { ConvexGeometry, ConvexBufferGeometry };
 
 class FNode {
 
@@ -140,6 +68,7 @@ class FNode {
         return p
     }
 }
+
 
 class Prims {
     static bindNodeToMesh(e, m) {
@@ -188,7 +117,10 @@ class Prims {
                 //CSG.fromMesh(b.getMesh());
                 let op = o;
                 b.operation && (op = b.operation)
+
+
                 bspA = bspA[op](bspB);
+
             }
             );
             //console.log(bspA)
@@ -473,8 +405,8 @@ let box;
                     }
 
                     regen(`Hello three.js!
-max line size
-multiLine`)
+here is a wider line..
+multiline text.`)
 /*
                     setInterval(()=>{
                         regen(`${Math.random()}
@@ -581,3 +513,81 @@ let defaultScene = `
 ]
 `
 export default FCAD;
+
+
+
+
+/*
+//import {ConvexGeometry} from "../lib/jsm/ConvexGeometry.js";
+
+import { ConvexHull } from '../lib/jsm/ConvexHull.js';
+
+// ConvexGeometry
+
+var ConvexGeometry = function ( points ) {
+
+	Geometry.call( this );
+
+	this.fromBufferGeometry( new ConvexBufferGeometry( points ) );
+	this.mergeVertices();
+
+};
+
+ConvexGeometry.prototype = Object.create( Geometry.prototype );
+ConvexGeometry.prototype.constructor = ConvexGeometry;
+
+// ConvexBufferGeometry
+
+var ConvexBufferGeometry = function ( points ) {
+
+	BufferGeometry.call( this );
+
+	// buffers
+
+	var vertices = [];
+	var normals = [];
+
+	if ( ConvexHull === undefined ) {
+
+		console.error( 'THREE.ConvexBufferGeometry: ConvexBufferGeometry relies on ConvexHull' );
+
+	}
+
+	var convexHull = new ConvexHull().setFromPoints( points );
+
+	// generate vertices and normals
+
+	var faces = convexHull.faces;
+
+	for ( var i = 0; i < faces.length; i ++ ) {
+
+		var face = faces[ i ];
+		var edge = face.edge;
+
+		// we move along a doubly-connected edge list to access all face points (see HalfEdge docs)
+
+		do {
+
+			var point = edge.head().point;
+
+			vertices.push( point.x, point.y, point.z );
+			normals.push( face.normal.x, face.normal.y, face.normal.z );
+
+			edge = edge.next;
+
+		} while ( edge !== face.edge );
+
+	}
+
+	// build geometry
+
+	this.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
+	this.setAttribute( 'normal', new Float32BufferAttribute( normals, 3 ) );
+
+};
+
+ConvexBufferGeometry.prototype = Object.create( BufferGeometry.prototype );
+ConvexBufferGeometry.prototype.constructor = ConvexBufferGeometry;
+
+export { ConvexGeometry, ConvexBufferGeometry };
+*/
