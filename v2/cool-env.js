@@ -1,5 +1,5 @@
-import * as THREE from "../../../three.js-dev/build/three.module.js";
-import { CSS3DRenderer } from "../../../three.js-dev/examples/jsm/renderers/CSS3DRenderer.js";
+import * as THREE from "../lib/three.module.js";
+//import { CSS3DRenderer } from "../../../three.js-dev/examples/jsm/renderers/CSS3DRenderer.js";
 
 import { HDRCubeTextureLoader } from "../../../three.js-dev/examples/jsm/loaders/HDRCubeTextureLoader.js";
 import { RGBELoader } from "../../../three.js-dev/examples/jsm/loaders/RGBELoader.js";
@@ -13,10 +13,10 @@ import { ShaderPass } from "../../../three.js-dev/examples/jsm/postprocessing/Sh
 import { CopyShader } from "../../../three.js-dev/examples/jsm/shaders/CopyShader.js";
 import { LuminosityHighPassShader } from "../../../three.js-dev/examples/jsm/shaders/LuminosityHighPassShader.js";
 import { UnrealBloomPass } from "../../../three.js-dev/examples/jsm/postprocessing/UnrealBloomPass.js";
+import { FXAAShader } from "../../../three.js-dev/examples/jsm/shaders/FXAAShader.js";
 
 import { SSAOShader } from "../../../three.js-dev/examples/jsm/shaders/SSAOShader.js";
 import { SSAOPass } from "../../../three.js-dev/examples/jsm/postprocessing/SSAOPass.js";
-import { FXAAShader } from "../../../three.js-dev/examples/jsm/shaders/FXAAShader.js";
 
 import { SimplexNoise } from "../../../three.js-dev/examples/jsm/math/SimplexNoise.js";
 

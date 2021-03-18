@@ -1,6 +1,6 @@
-import * as THREE from "../../../three.js-dev/build/three.module.js";
-import {OrbitControls} from "../../../three.js-dev/examples/jsm/controls/OrbitControls.js";
-import {TransformControls} from "../../../three.js-dev/examples/jsm/controls/TransformControls.js";
+import * as THREE from "../lib/three.module.js";
+import {OrbitControls} from "../lib/jsm/OrbitControls.js";
+import {TransformControls} from "../lib/jsm/TransformControls.js";
 //import { ConvexHull } from "../three.js-dev/examples/jsm/math/ConvexHull.js";
 import GridMaterial from "./grid-material.js";
 

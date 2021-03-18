@@ -1,4 +1,4 @@
-import * as THREE from "../../../three.js-dev/build/three.module.js";
+import * as THREE from "../lib/three.module.js";
 let vs = `
 varying vec3 vertex;
   void main() {
