@@ -33,7 +33,7 @@ The supported operations are .subtract, .union, and .intersect.
 
 By using different combinations of these 3 operations, and changing the order of the input models, you can construct any combination of the input models.
 
-In the screenshot/demo above, I show the possible results with a cube and a sphere...
+In the first screenshot/demo above, I show the possible results with a cube and a sphere...
 
 In blue is the result of the .union operation, for  sphere->cube and cube->sphere (the result is same in this case )
 
