@@ -1,8 +1,8 @@
-import * as THREE from "../../../three.js-dev/build/three.module.js";
+import * as THREE from '../../../three.js-dev/build/three.module.js';
 import {SimplifyModifier} from '../../../three.js-dev/examples/jsm/modifiers/SimplifyModifier.js';
 //import CanvasRecorder from "./canvas-recorder.js"
 import UI from "./ui.js"
-import CSG from "./three-csg.js";
+import CSG from "../three-buffered-csg.js";
 import FCAD from "./fcad.js";
 
 document.addEventListener('init', (e)=>{

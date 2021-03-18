@@ -4,12 +4,6 @@
 // Copyright (c) 2011 Evan Wallace (http://madebyevan.com/), under the MIT license.
 // THREE.js rework by thrax
 
-
-
-
-
-
-
 // # class CSG
 // Holds a binary space partition tree representing a 3D solid. Two solids can
 // be combined using the `union()`, `subtract()`, and `intersect()` methods.
@@ -93,8 +87,6 @@ CSG.fromPolygons=function(polygons) {
 // Example usage:
 // 
 //     new CSG.Vector(1, 2, 3);
-//     new CSG.Vector([1, 2, 3]);
-//     new CSG.Vector({ x: 1, y: 2, z: 3 });
 
 
 
@@ -166,8 +158,6 @@ class Vector {
 		this.z = ax * by - ay * bx;
 
 		return this;
-
-        //return THREE.Vector3.prototype.cross.call(this, a)
     }
     dot(b){
         return (this.x*b.x)+(this.y*b.y)+(this.z*b.z)
@@ -452,5 +442,50 @@ class Node {
 }
 
 
+export {CSG,Vertex,Vector,Polygon,Plane}
 
-export {CSG,Vertex,Vector,Polygon}
+
+
+// Return a new CSG solid representing space in either this solid or in the
+// solid `csg`. Neither this solid nor the solid `csg` are modified.
+// 
+//     A.union(B)
+// 
+//     +-------+            +-------+
+//     |       |            |       |
+//     |   A   |            |       |
+//     |    +--+----+   =   |       +----+
+//     +----+--+    |       +----+       |
+//          |   B   |            |       |
+//          |       |            |       |
+//          +-------+            +-------+
+// 
+// Return a new CSG solid representing space in this solid but not in the
+// solid `csg`. Neither this solid nor the solid `csg` are modified.
+// 
+//     A.subtract(B)
+// 
+//     +-------+            +-------+
+//     |       |            |       |
+//     |   A   |            |       |
+//     |    +--+----+   =   |    +--+
+//     +----+--+    |       +----+
+//          |   B   |
+//          |       |
+//          +-------+
+// 
+// Return a new CSG solid representing space both this solid and in the
+// solid `csg`. Neither this solid nor the solid `csg` are modified.
+// 
+//     A.intersect(B)
+// 
+//     +-------+
+//     |       |
+//     |   A   |
+//     |    +--+----+   =   +--+
+//     +----+--+    |       +--+
+//          |   B   |
+//          |       |
+//          +-------+
+// 
+

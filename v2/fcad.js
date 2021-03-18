@@ -1,5 +1,5 @@
 import*as THREE from "../../../three.js-dev/build/three.module.js";
-import CSG from "./three-buffered-csg.js";
+import CSG from "../three-buffered-csg.js";
 import {ConvexGeometry} from "../../../three.js-dev/examples/jsm/geometries/ConvexGeometry.js";
 
 import {GLTFLoader} from "../../../three.js-dev/examples/jsm/loaders/GLTFLoader.js"
@@ -319,7 +319,12 @@ class FCAD {
                     glbt.scene.traverse(e=>e.isMesh && (meshes.push(e) && (e.material = mm)))
 
                     let ringMesh = meshes[0]
-                    ringMesh.scale.multiplyScalar(.58)
+                    ringMesh.scale.multiplyScalar(.78)
+                    ringMesh.position.y-=.46
+
+
+
+
                     let textMesh = meshes[1]
                     textMesh.position.x -= .6
                     textMesh.position.z += -.2
@@ -352,6 +357,7 @@ let box;
                         if(!box){
                              box = new THREE.Box3();
                             box.setFromObject(textMesh);
+                            box.expandByScalar(.01)
                             let sz = box.getSize(new THREE.Vector3())
                             bx = new THREE.Mesh(new THREE.BoxBufferGeometry(sz.x,sz.y,sz.z),mm);
                             box.getCenter(bx.position);

@@ -38,8 +38,8 @@ function reindexBufferGeometry(bufferGeometry,options){
     var outAttrs={}
     for(let j in attribs){
         let attr=attribs[j];
-        console.log("before:",j,attr.count * attr.itemSize)
         outAttrs[j]=[];
+       // console.log("before:",j,attr.count * attr.itemSize)
     }
     for(let i=0;i<uniqueVerts.length;i++){
         let vert = uniqueVerts[i]
@@ -49,7 +49,7 @@ function reindexBufferGeometry(bufferGeometry,options){
     }
     for(let j in outAttrs){
         let attr=attribs[j];
-        console.log("after:",j,attr.count * attr.itemSize,outAttrs[j].length)
+      //  console.log("after:",j,attr.count * attr.itemSize,outAttrs[j].length)
     }
 }
 

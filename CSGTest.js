@@ -20,9 +20,12 @@ import {FXAAShader} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples
 
 import {SimplexNoise} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/math/SimplexNoise.js"
 
-import CSG from "./CSGMesh.js"
 
-import reindexBufferGeometry from "./BufferGeometryOptimizer.js"
+import reindexBufferGeometry from "./BufferGeometryIndexer.js"
+
+
+import CSG from "./three-buffered-csg.js"
+
 
 let renderer = new THREE.WebGLRenderer({
     antialias: true
@@ -128,20 +131,9 @@ function loadHDR(dir) {
 
         scene.background = hdrCubeMap;
         var newEnvMap = hdrCubeRenderTarget ? hdrCubeRenderTarget.texture : null;
-
-        if (true)
-            scene.traverse(e=>{
-                if (e.isMesh) {
-                    e.material.envMap = newEnvMap;
-                    e.material.needsUpdate = true;
-                    e.material.roughness = 0.7;
-                    e.material.metalness = 0.7;
-                    //e.material.flatShading = true;
-                    e.castShadow = e.receiveShadow = true;
-                    //     if(e.name!=='ground')e.material.wireframe = true;
-                }
-            }
-            )
+        scene.environment = newEnvMap;
+renderer.toneMapping = THREE.ReinhardToneMapping;
+renderer.toneMappingExposure = 4;
     });
     return {
         cubeMap: hdrCubeMap,
@@ -217,6 +209,7 @@ ground.name = 'ground'
 ground.material.roughnessMap = ground.material.roughnessMap.clone();
 ground.material.roughnessMap.repeat.set(8, 8)
 ground.material.roughnessMap.needsUpdate = true;
+ground.receiveShadow = true;
 
 let box = new THREE.Mesh(new THREE.BoxGeometry(2,2,2),mkMat('grey'))
 scene.add(box)
@@ -445,9 +438,12 @@ let roundBox = (size,radius,count)=>{
     let base = doCSGOperations(root.children, unionMaterial)
     root.children.length = 0;
 
-let bgeom = new THREE.BufferGeometry().fromGeometry(base.geometry)
-reindexBufferGeometry(bgeom)
-base.geometry = bgeom
+let bgeom = base.geometry;
+if(!bgeom.isBufferGeometry){
+    bgeom = new THREE.BufferGeometry().fromGeometry(base.geometry)
+    base.geometry = bgeom
+}
+    reindexBufferGeometry(bgeom)
     root.add(base);
 //base.material.wireframe = true
     let time = performance.now() - start
@@ -514,6 +510,8 @@ function animate(time) {
         meshIdx = nextIdx;
         subMesh = subMeshes[meshIdx]
         scene.add(subMesh)
+        subMesh.castShadow=box.castShadow = 
+        subMesh.receiveShadow=box.receiveShadow = true 
     }
 
     subMesh.position.y = 0.25

@@ -10,14 +10,16 @@ THREE.js rework by thrax under MIT license.
 Here's a running demo
 http://vectorslave.com/csg/CSGDemo.html
 
-[![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/CSGScreenShot.png)](#screenshot)
-
-
+[![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/assets/CSGScreenShot.png)](#screenshot)
 
 And a shinier, slightly more complex demo:
 http://vectorslave.com/csg/CSGShinyDemo.html
 
-[![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/CSGShinyScreenshot.jpg)](#screenshot)
+[![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/assets/CSGShinyScreenshot.jpg)](#screenshot)
+
+And a more complex example showing cutting a text mesh into another complex mesh:
+http://vectorslave.com/csg/v2/index.html
+
 
 CSG is the name of a technique for generating a new geometry as a function of two input geometries.
 
@@ -39,6 +41,13 @@ In red is the result of the .subtract operation, for  sphere->cube and cube->sph
 
 Example usage:
 
+
+# EXAMPLE 0:
+```
+//Minimal example..
+import {CSG} from "three-buffered-csg.js"
+scene.add(CSG.toMesh(CSG.subtract(CSG.fromMesh(a),CSG.fromMesh(b)),a.material))
+```
 # EXAMPLE 1:
 Make a helper function to streamline the operation... (I may make this a static function in the lib itself TBD)
 ```
@@ -97,6 +106,8 @@ meshResult.material = meshA.material
 if(meshA.geometry.isBufferGeometry)
     // make the result a bufferGeometry too
    meshResult.geometry = new THREE.BufferGeometry().fromGeometry(meshResult.geometry)
+
+------ EDIT with V2, BufferGeometry will be used internally by default.
 
 ```
 
