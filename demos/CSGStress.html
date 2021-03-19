@@ -19,13 +19,11 @@
     <body>
         <div id='container' style='width:100%;height:100%;'></div>
     </body>
-
-
-<script type="module">
+    <script type="module">
+        
 
     import * as THREE from '../lib/three.module.js';
     import {OrbitControls} from '../lib/jsm/OrbitControls.js';
-
     import CSG from "../three-csg.js"
 
     let renderer = new THREE.WebGLRenderer()
@@ -36,8 +34,6 @@
     let camera = new THREE.PerspectiveCamera();
     camera.position.set(10,10,10)
     let controls = new OrbitControls(camera,container)
-
-
     function mkCanvas(dim) {
         var canvas = document.createElement('canvas');
         canvas.width = canvas.height = dim;
@@ -94,13 +90,13 @@
     let sphere = new THREE.Mesh(new THREE.SphereBufferGeometry(1.2,8,8),mkMat('grey'))
     scene.add(sphere)
 
-let addColors=geometry=>{
-    let colors = geometry.attributes.position.array.slice(0)
-    for(let i=0;i<colors.length;i++)colors[i]=random()
-    geometry.setAttribute('color',new THREE.BufferAttribute(colors,3));
-}
-addColors(box.geometry)
-addColors(sphere.geometry)
+    let addColors=geometry=>{
+        let colors = geometry.attributes.position.array.slice(0)
+        for(let i=0;i<colors.length;i++)colors[i]=random()
+        geometry.setAttribute('color',new THREE.BufferAttribute(colors,3));
+    }
+    addColors(box.geometry)
+    addColors(sphere.geometry)
 
     function doCSG(a,b,op,mat,mat1=mat){
         var bspA = CSG.fromMesh( a, 0);
@@ -161,4 +157,5 @@ addColors(sphere.geometry)
         recompute();
     }
     renderer.setAnimationLoop(animate) 
-</script>
+
+    </script>

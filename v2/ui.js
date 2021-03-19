@@ -4,7 +4,8 @@ class UI
 
 }
 
-function init(){
+function init(app){
+    let {scene}=app;
     let w=window
     let opButtonEvt = new Event('opButton')
     let opButton=(e)=>{
@@ -26,10 +27,12 @@ function init(){
     w.csgAddCylinder && (w.csgAddCylinder.onclick = addBtnClick)
 
     let cvclick = (e)=>e.target.style.height = ((e.target.style.height=="15px")?e.target.scrollHeight+"px":"15px")
-    window.codeView.onclick = cvclick;
+    window.codeView&&(window.codeView.onclick = cvclick);
     document.addEventListener('cadRecomputed',(e)=>{
-        window.codeView.innerText =  '[code]\n'+JSON.stringify(e.jsobj, undefined, 4);
-        window.codeView.onclick = cvclick
+        if(window.codeView){
+            window.codeView.innerText =  '[code]\n'+JSON.stringify(e.jsobj, undefined, 4);
+            window.codeView.onclick = cvclick
+        }
     })
 
     let selection
@@ -41,15 +44,17 @@ function init(){
             let fcad = selection[0].userData.node.fcad;
             let top=fcad.nodes.length-1;
             let topNode = fcad.nodes[top]
-            window.elemIndexSlider.min = 0;
-            window.elemIndexSlider.max = top;
-            let id = selection[0].userData.node.id;
-            let val=0;
-            topNode.args.forEach((e,i)=>(e.id==id)&&(val=i))
-            window.elemIndexSlider.value = val;
+            if(window.elemIndexSlider){
+                window.elemIndexSlider.min = 0;
+                window.elemIndexSlider.max = top;
+                let id = selection[0].userData.node.id;
+                let val=0;
+                topNode.args.forEach((e,i)=>(e.id==id)&&(val=i))
+                window.elemIndexSlider.value = val;
+            }
         }
     })
-    window.elemIndexSlider.oninput=(e)=>{
+    if(window.elemIndexSlider)window.elemIndexSlider.oninput=(e)=>{
         if(selection && selection.length){
             let destId=parseInt(e.target.value)
             console.log(e.target.value)
@@ -71,6 +76,25 @@ function init(){
             }
         }
     }
+
+    window.addEventListener("keydown", e=>{
+
+        if (e.code === 'KeyW') {
+            let mats={}
+            scene.traverse((e)=>(e.isMesh)&&(mats[e.material.uuid]=e.material))
+            for(let f in mats){
+                let m=mats[f]
+                if (m.userData.saveWireframe === undefined) {
+                    m.userData.saveWireframe = m.wireframe
+                    m.wireframe = true;
+                } else {
+                    m.wireframe = m.userData.saveWireframe
+                    delete m.userData.saveWireframe;
+                }
+            }
+        }
+    }
+    , false);
 }
 
 export default init;

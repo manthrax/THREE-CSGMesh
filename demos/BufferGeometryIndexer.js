@@ -1,8 +1,5 @@
 import * as THREE from "../lib/three.module.js"
 
-
-
-
 function reindexBufferGeometry(bufferGeometry,options){
     let nonIndexed = bufferGeometry.index ? bufferGeometry.toNonIndexed() : bufferGeometry   
     let attribs = nonIndexed.attributes

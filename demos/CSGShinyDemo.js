@@ -1,27 +1,6 @@
 import*as THREE from "../lib/three.module.js"
 import {OrbitControls} from "../lib/jsm/OrbitControls.js"
-//import {CSS3DRenderer} from "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/renderers/CSS3DRenderer.js"
-
-import {HDRCubeTextureLoader} from "../lib/jsm/HDRCubeTextureLoader.js"
-import {RGBELoader} from "../lib/jsm/RGBELoader.js"
-//import {PMREMGenerator} from  "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/pmrem/PMREMGenerator.js"
-//import {PMREMCubeUVPacker} from  "https://cdn.rawgit.com/mrdoob/three.js/master/examples/jsm/pmrem/PMREMCubeUVPacker.js"
-
-import {EffectComposer} from "../lib/jsm/postprocessing/EffectComposer.js"
-import {RenderPass} from "../lib/jsm/postprocessing/RenderPass.js"
-import {ShaderPass} from "../lib/jsm/postprocessing/ShaderPass.js"
-import {CopyShader} from "../lib/jsm/shaders/CopyShader.js"
-import {LuminosityHighPassShader} from "../lib/jsm/shaders/LuminosityHighPassShader.js"
-import {UnrealBloomPass} from "../lib/jsm/postprocessing/UnrealBloomPass.js"
-
-import {SSAOShader} from "../lib/jsm/shaders/SSAOShader.js"
-import {SSAOPass} from "../lib/jsm/postprocessing/SSAOPass.js"
-import {FXAAShader} from "../lib/jsm/shaders/FXAAShader.js"
-
-import {SimplexNoise} from "../lib/jsm/SimplexNoise.js"
-
 import reindexBufferGeometry from "./BufferGeometryIndexer.js"
-
 import CSG from "../three-csg.js"
 
 let renderer = new THREE.WebGLRenderer({
@@ -29,13 +8,6 @@ let renderer = new THREE.WebGLRenderer({
 })
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.shadowMap.enabled = true;
-//renderer.gammaInput = true;
-//renderer.gammaOutput = true;
-//renderer.toneMapping = THREE.Uncharted2ToneMapping
-//ReinhardToneMapping;//;
-renderer.toneMappingExposure = 2.3;
-//0.5;//2.3;
-//renderer.toneMappingWhitePoint = 2.5
 
 let domElement = renderer.domElement;
 container.appendChild(domElement)
@@ -46,121 +18,17 @@ let controls = new OrbitControls(camera,container)
 controls.enableDamping = true;
 controls.dampingFactor = 0.98
 
-let ssaoPass;
-let fxaaPass;
-function setupPostProcessing() {
-    var bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth,window.innerHeight),1.5,0.4,0.85);
-    bloomPass.threshold = 0.999;
-    //0.85;   0,1.5,0
-    bloomPass.strength = 1.5;
-    bloomPass.radius = 0.0;
-    //0.02;
+import Environment from '../v2/cool-env.js'
+let env = new Environment(renderer,scene,camera)
+import UI from '../v2/ui.js'
 
-    var renderScene = new RenderPass(scene,camera);
+UI({
+    renderer,
+    scene,
+    camera
+})
 
-    let composer = new EffectComposer(renderer);
-    composer.setSize(window.innerWidth, window.innerHeight);
-
-    composer.addPass(renderScene);
-
-    fxaaPass = new ShaderPass(FXAAShader);
-
-    renderer.setPixelRatio(1);
-
-    var pixelRatio = renderer.getPixelRatio();
-
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-    let copyPass = new ShaderPass(CopyShader);
-
-    ssaoPass = new SSAOPass(scene,camera,width,height);
-    ssaoPass.minDistance = 0.005;
-    ssaoPass.maxDistance = 0.28;
-    ssaoPass.kernelRadius = 10.1;
-
-    fxaaPass.material.uniforms['resolution'].value.x = 1 / (width * pixelRatio);
-    fxaaPass.material.uniforms['resolution'].value.y = 1 / (window.innerHeight * pixelRatio);
-
-    //bloomPass.renderToScreen = false;
-
-    composer.addPass(fxaaPass);
-
-    //ssaoPass.clear = false;
-    //composer.addPass( ssaoPass );
-
-    //composer.addPass( copyPass );
-
-    composer.addPass(bloomPass);
-
-    //renderer.toneMapping = THREE.ReinhardToneMapping;
-    return composer
-}
-let composer = setupPostProcessing();
-
-function loadHDR(dir) {
-    var hdrCubeRenderTarget;
-    var hdrCubeMap;
-    var hdrUrls = ['px.hdr', 'nx.hdr', 'py.hdr', 'ny.hdr', 'pz.hdr', 'nz.hdr'];
-    dir = dir || 'venice_sunset';
-    //'san_guiseppe_bridge'
-    hdrCubeMap = new HDRCubeTextureLoader().setPath('../assets/' + dir + '/').setDataType(THREE.UnsignedByteType).load(hdrUrls, function() {
-
-        var pmremGenerator = new THREE.PMREMGenerator(renderer);
-        pmremGenerator.compileCubemapShader();
-
-        hdrCubeRenderTarget = pmremGenerator.fromCubemap(hdrCubeMap);
-        pmremGenerator.dispose();
-        /*
-            //hdrCubeMap );
-            //pmremGenerator.update( renderer );
-
-            var pmremCubeUVPacker = new THREE.PMREMCubeUVPacker( pmremGenerator.cubeLods );
-            pmremCubeUVPacker.update( renderer );
-
-            hdrCubeRenderTarget = pmremCubeUVPacker.CubeUVRenderTarget;
-
-            hdrCubeMap.magFilter = THREE.LinearFilter;
-            hdrCubeMap.needsUpdate = true;
-
-            pmremGenerator.dispose();
-            pmremCubeUVPacker.dispose();
-
-*/
-
-        scene.background = hdrCubeMap;
-        var newEnvMap = hdrCubeRenderTarget ? hdrCubeRenderTarget.texture : null;
-        scene.environment = newEnvMap;
-        renderer.toneMapping = THREE.ReinhardToneMapping;
-        renderer.toneMappingExposure = 4;
-    });
-    return {
-        cubeMap: hdrCubeMap,
-        cubeRenderTarget: hdrCubeRenderTarget
-    }
-}
-
-let hdr = loadHDR()
-
-function mkCanvas(dim) {
-    var canvas = document.createElement('canvas');
-    canvas.width = canvas.height = dim;
-    return canvas;
-}
-function makeProceduralTexture(dim, fn) {
-    var canv = mkCanvas(dim);
-    var ctx = canv.getContext('2d');
-    var pix = ctx.getImageData(0, 0, dim, dim);
-    var u32view = new DataView(pix.data.buffer);
-    var idx = -4;
-    for (var j = 0; j < dim; j++)
-        for (var i = 0; i < dim; i++)
-            u32view.setUint32(idx += 4, fn(j / dim, i / dim) | 0);
-    ctx.putImageData(pix, 0, 0);
-    var tex = new THREE.Texture(canv);
-    tex.needsUpdate = true;
-    return tex;
-}
-var tx = makeProceduralTexture(1024, (u,v)=>{
+var tx = env.makeProceduralTexture(1024, (u,v)=>{
     var rb = ((Math.random() * 128) | 0) * (((((u * 2) & 1) ^ ((v * 2) & 1)) | 0) ? 1 : 2)
     return (rb * 256) | (rb * 256 * 256) | (rb * 256 * 256 * 256) | 0x000000ff
 }
@@ -168,7 +36,6 @@ var tx = makeProceduralTexture(1024, (u,v)=>{
 tx.repeat.set(2, 2);
 tx.wrapS = tx.wrapT = THREE.RepeatWrapping
 
-//let mkMat=(color) => new THREE.MeshStandardMaterial({color:color,roughness:0.51,metalness:0.7,map:tx});
 let mkMat = (color)=>new THREE.MeshStandardMaterial({
     color: color,
     roughness: 0.51,
@@ -176,14 +43,6 @@ let mkMat = (color)=>new THREE.MeshStandardMaterial({
     roughnessMap: tx
 });
 let rnd = (rng)=>((Math.random() * 2) - 1) * (rng || 1)
-/*let mkLight = ()=>{
-        let light1 = new THREE.PointLight();
-        light1.position.set(rnd(20),rnd(3)+5,rnd(20))
-        scene.add(light1);
-    }
-    
-    for(var i=0;i<4;i++)mkLight()*/
-
 let light1 = new THREE.DirectionalLight();
 light1.position.set(2.8, 12, -35)
 light1.castShadow = true;
@@ -212,8 +71,8 @@ ground.receiveShadow = true;
 let box = new THREE.Mesh(new THREE.BoxGeometry(2,2,2),mkMat('grey'))
 scene.add(box)
 
-let sphere = new THREE.Mesh(new THREE.SphereGeometry(1.2,8,8),mkMat('grey'))
-let cylinder = new THREE.Mesh(new THREE.CylinderGeometry(1.2,0.8,2.2,8,8),mkMat('grey'))
+let sphere = new THREE.Mesh(new THREE.SphereBufferGeometry(1.2,8,8),mkMat('grey'))
+let cylinder = new THREE.Mesh(new THREE.CylinderBufferGeometry(1.2,0.8,2.2,8,8),mkMat('grey'))
 let tsz = 1.0
 let torusKnot = new THREE.Mesh(new THREE.TorusKnotGeometry(tsz,tsz * 0.33,20,3),mkMat('grey'))
 let subBox = box.clone()
@@ -471,17 +330,9 @@ function checkForResize() {
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
         var pixelRatio = renderer.getPixelRatio()
-        if (composer) {
-            composer.setSize(width, height)
-            ssaoPass.setSize(width, height)
-            fxaaPass.material.uniforms['resolution'].value.x = 1 / (width * pixelRatio);
-            fxaaPass.material.uniforms['resolution'].value.y = 1 / (height * pixelRatio);
-        }
+        env.resize(width, height)
     }
-
 }
-
-function dynamicExposure() {}
 
 var meshIdx = -1;
 let subMesh;
@@ -511,8 +362,8 @@ function animate(time) {
     light2.position.z = Math.cos(tm * 0.53) * 7;
     light2.position.y = (Math.cos(tm * 0.42) * 4) + 6;
 
-    if (composer)
-        composer.render();
+    if (env.composer)
+        env.composer.render();
     else
         renderer.render(scene, camera)
 

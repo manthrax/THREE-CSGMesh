@@ -1,4 +1,4 @@
-import * as THREE from "../lib/three.module.js";
+import*as THREE from "../lib/three.module.js";
 import {OrbitControls} from "../lib/jsm/OrbitControls.js";
 import {TransformControls} from "../lib/jsm/TransformControls.js";
 //import { ConvexHull } from "../three.js-dev/examples/jsm/math/ConvexHull.js";
@@ -11,14 +11,14 @@ class App3 {
     constructor() {
         let camera, scene, renderer, ocontrols;
 
-
         renderer = new THREE.WebGLRenderer({
             antialias: true,
             alpha: true
         });
         renderer.setClearColor(0x101010);
         renderer.outputEncoding = THREE.sRGBEncoding;
-        renderer.shadowMap.type = THREE.VSMShadowMap;//THREE.PCFSoftShadowMap;
+        renderer.shadowMap.type = THREE.VSMShadowMap;
+        //THREE.PCFSoftShadowMap;
         renderer.shadowMap.enabled = true;
         document.body.appendChild(renderer.domElement);
 
@@ -31,12 +31,9 @@ class App3 {
         let lastSavedPosition = new THREE.Vector3(2,1.5,2)
 
         ocontrols = this.orbitControls = new OrbitControls(camera,renderer.domElement);
-ocontrols.enabled = true;
-ocontrols.minZoom = ocontrols.minDistance = 1;
-        //debugger
-        //ocontrols.autoRotate = true;
+        ocontrols.enabled = true;
+        ocontrols.minZoom = ocontrols.minDistance = 1;
         try {
-            //throw ''
             camera.position.copy(JSON.parse(localStorage.cameraPosition))
             ocontrols.target.copy(JSON.parse(localStorage.controlsTarget))
         } catch {
@@ -44,42 +41,17 @@ ocontrols.minZoom = ocontrols.minDistance = 1;
             ocontrols.target.set(0, 0, 0)
         }
 
-        let environment = new Environment(renderer,scene,camera)
-
-        /*
-const geometry = new THREE.BoxBufferGeometry(1, 1, 1, 1, 1);
-const backMaterial = new THREE.MeshStandardMaterial({
-  color: "white",
-  opacity: 0.9,
-  transparent: true,
-  side: THREE.BackSide,
-  depthWrite: false
-});
-const frontMaterial = new THREE.MeshStandardMaterial({
-  color: "white",
-  opacity: 0.1,
-  transparent: true,
-  side: THREE.FrontSide
-});
-*/
+        let environment = this.environment = new Environment(renderer,scene,camera)
 
         let frontMaterial = Environment.mkMat('yellow')
         frontMaterial.transparent = true;
         frontMaterial.opacity = .25;
 
-        /*
-const light = new THREE.PointLight("white", 0.5);
-light.position.set(20, 30, 40);
-scene.add(light);
-const light1 = new THREE.PointLight("white", 0.5);
-light1.position.set(-20, 30, -40);
-scene.add(light1);
-*/
         let transformControls = this.transformControls = new TransformControls(camera,renderer.domElement);
         transformControls.translationSnap = 0.05;
         transformControls.rotationSnap = Math.PI / 16;
         scene.add(transformControls);
-/*
+        /*
         let gridmat = Environment.mkMat(0x404040)
         gridmat.transparent = true;
         let grid = GridMaterial.makeGrid(gridmat)
@@ -89,7 +61,8 @@ scene.add(light1);
         var raycaster = new THREE.Raycaster();
         var mouse = new THREE.Vector2();
 
-        let selectionMaterial = Environment.mkMat(0x404040);//grid.material.clone();
+        let selectionMaterial = Environment.mkMat(0x404040);
+        //grid.material.clone();
         //new GridMaterial(frontMaterial.clone());
         selectionMaterial.color.set('blue');
         selectionMaterial.emissive.set(0x202020)
@@ -145,9 +118,10 @@ scene.add(light1);
 
             update() {
                 if (this.selectedCount) {
-                    if(this.lastSelectedId != this.selection[0].uuid){
+                    if (this.lastSelectedId != this.selection[0].uuid) {
                         this.lastSelectedId = this.selection[0].uuid
-                        if(!this.selectionChangedEvent)this.selectionChangedEvent = new Event('selectionChanged')
+                        if (!this.selectionChangedEvent)
+                            this.selectionChangedEvent = new Event('selectionChanged')
                         this.selectionChangedEvent.app = this;
                         document.dispatchEvent(this.selectionChangedEvent)
                     }
@@ -195,38 +169,36 @@ scene.add(light1);
         }
 
         let materials = this.materials = [transpMat('gray', 1.), transpMat('red', .7), transpMat('green', .7), transpMat('purple', .7), transpMat('teal', .7), transpMat('orange', .7), ]
- 
+
         transformControls.addEventListener("dragging-changed", event=>{
             ocontrols.enabled = !event.value;
             wasDragged = event.value;
-            if (!wasDragged) {
-                //console.log("Dragging");
-            } else {
-                //console.log("Drag");
-                //setElements(fc.update())
+            if (!wasDragged) {//console.log("Dragging");
+            } else {//console.log("Drag");
+            //setElements(fc.update())
             }
         }
         );
 
-this.scene = scene;
-this.elements = elements;
+        this.scene = scene;
+        this.elements = elements;
 
-this.mouseWorld = new THREE.Vector3(0,0,0)
-this.smoothMouseWorld = new THREE.Vector3(0,0,0)
+        this.mouseWorld = new THREE.Vector3(0,0,0)
+        this.smoothMouseWorld = new THREE.Vector3(0,0,0)
 
-this.mouse={
-    mouseWorld:this.mouseWorld,
-    smoothMouseWorld:this.smoothMouseWorld,
-    buttons:0
-}
+        this.mouse = {
+            mouseWorld: this.mouseWorld,
+            smoothMouseWorld: this.smoothMouseWorld,
+            buttons: 0
+        }
 
-let groundProxy = new THREE.Mesh(new THREE.PlaneBufferGeometry(1000,1000))
-groundProxy.rotation.x = Math.PI*-.5
-groundProxy.updateMatrixWorld()
+        let groundProxy = new THREE.Mesh(new THREE.PlaneBufferGeometry(1000,1000))
+        groundProxy.rotation.x = Math.PI * -.5
+        groundProxy.updateMatrixWorld()
 
-let v0 = new THREE.Vector3();
+        let v0 = new THREE.Vector3();
 
-let mouseChangeEvent=new Event('mouseChange')
+        let mouseChangeEvent = new Event('mouseChange')
         let mouseEvent = event=>{
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -235,13 +207,13 @@ let mouseChangeEvent=new Event('mouseChange')
             var intersects = raycaster.intersectObjects(elements.elements);
             this.mouse.buttons = event.buttons;
             // scene.children );
-            if(!intersects.length){
-                    if(!event.buttons){
-                        ocontrols.enabled = true;
-                        transformControls.enabled = false;
-                    }
+            if (!intersects.length) {
+                if ((!event.buttons) && !(event.ctrlKey || event.shiftKey || event.altKey)) {
+                    ocontrols.enabled = true;
+                    transformControls.enabled = false;
+                }
                 let gndintersects = raycaster.intersectObjects([groundProxy]);
-                if(gndintersects.length){
+                if (gndintersects.length) {
                     this.mouseWorld.copy(gndintersects[0].point)
                     return
                 }
@@ -253,8 +225,8 @@ let mouseChangeEvent=new Event('mouseChange')
                     return;
 
                 if (intersects.length) {
-ocontrols.enabled = false;
-transformControls.enabled = true;
+                    ocontrols.enabled = false;
+                    transformControls.enabled = true;
 
                     if (!event.shiftKey)
                         elements.clearSelection()
@@ -264,20 +236,17 @@ transformControls.enabled = true;
                     if (event.buttons === 1)
                         elements.clearSelection();
                 }
-            } else if (event.type === "pointerup") {
-                //updateCSG()
+            } else if (event.type === "pointerup") {//updateCSG()
             } else if (event.type === "pointermove") {}
 
-mouseChangeEvent.event = event;
-document.dispatchEvent(mouseChangeEvent)
-
+            mouseChangeEvent.event = event;
+            document.dispatchEvent(mouseChangeEvent)
 
             transformControls.enabled = transformControls.visible = elements.selectedCount ? true : false;
         }
         ;
 
         window.addEventListener("keyup", ()=>transformControls.setMode("translate"), false);
-
         window.addEventListener("pointermove", mouseEvent, false);
         window.addEventListener("pointerdown", mouseEvent, false);
         window.addEventListener("pointerup", mouseEvent, false);
@@ -296,36 +265,38 @@ document.dispatchEvent(mouseChangeEvent)
 
         resizeFn();
         window.addEventListener("resize", resizeFn, false)
-        
-        let clamp=(v,n,p)=>v<n?n:v>p?p:v
-        let clampPoint=(pt,mdist)=>{
-            pt.set(clamp(pt.x,-mdist,mdist),clamp(pt.y,-mdist,mdist),clamp(pt.z,-mdist,mdist))
+
+        let clamp = (v,n,p)=>v < n ? n : v > p ? p : v
+        let clampPoint = (pt,mdist)=>{
+            pt.set(clamp(pt.x, -mdist, mdist), clamp(pt.y, -mdist, mdist), clamp(pt.z, -mdist, mdist))
         }
 
-        let constrainView=()=>{
+        let constrainView = ()=>{
 
-            if(ocontrols.target.y<1){
-                camera.position.y += 1-ocontrols.target.y;
-                ocontrols.target.y += 1-ocontrols.target.y;
+            if (ocontrols.target.y < 1) {
+                camera.position.y += 1 - ocontrols.target.y;
+                ocontrols.target.y += 1 - ocontrols.target.y;
             }
-            if(camera.position.y<1){
-                ocontrols.target.y += 1-camera.position.y;
-                camera.position.y += 1-camera.position.y;
+            if (camera.position.y < 1) {
+                ocontrols.target.y += 1 - camera.position.y;
+                camera.position.y += 1 - camera.position.y;
             }
-ocontrols.maxDistance = 1000;
-            if(ocontrols.target.y<1){
+            ocontrols.maxDistance = 1000;
+            if (ocontrols.target.y < 1) {
                 //camera.position.y += 1-ocontrols.target.y;
-                ocontrols.target.y += 1-ocontrols.target.y;
+                ocontrols.target.y += 1 - ocontrols.target.y;
             }
             //ocontrols.target.set(0,0,0)
-            clampPoint(ocontrols.target,1000)
-            clampPoint(camera.position,1000)
+            clampPoint(ocontrols.target, 1000)
+            clampPoint(camera.position, 1000)
             //clampPoint(camera.position,100)
         }
-        
+
         let beforeRenderEvent = new Event('beforeRender')
+        let afterRenderEvent = new Event('afterRender')
         renderer.setAnimationLoop(()=>{
-            this.smoothMouseWorld.add(v0.copy(this.mouseWorld).sub(this.smoothMouseWorld).multiplyScalar(0.1))  // Mouse smoothing...
+            this.smoothMouseWorld.add(v0.copy(this.mouseWorld).sub(this.smoothMouseWorld).multiplyScalar(0.1))
+            // Mouse smoothing...
             ocontrols.update();
             if (!lastSavedPosition.equals(camera.position)) {
                 lastSavedPosition.copy(camera.position)
@@ -340,6 +311,7 @@ ocontrols.maxDistance = 1000;
                 environment.composer.render();
             else
                 renderer.render(scene, camera);
+            document.dispatchEvent(afterRenderEvent)
 
         }
         );
@@ -351,4 +323,4 @@ ocontrols.maxDistance = 1000;
     }
 }
 
-new App3();
+export default new App3();

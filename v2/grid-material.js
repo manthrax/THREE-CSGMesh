@@ -92,34 +92,3 @@ grid.renderOrder = 0;
 }
 
 export default GridMaterial
-
-
-/*
-
-let plane = new THREE.Mesh(new THREE.PlaneGeometry(10,10),new THREE.ShaderMaterial({
-  uniforms:{map:{value:grid.material.map}},
-  vertexShader:`varying vec2 vUv;void main() {vUv = uv;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );}`,
-  fragmentShader:`varying vec2 vUv; 
-float hexDist(vec2 p){
-  p=abs(p);
-  float c = dot(p,normalize(vec2(1,1.73)));
-  c=max(c,p.x);
-  return c;
-}
-void main(){
-vec2 uv = vUv * 10.;
-float s3 = 0.86602540378;
-
-float p0=fract(dot(vec2(0,1),uv)+.2);
-float p1=fract(dot(vec2( s3,.5),uv));
-float p2=fract(dot(vec2(-s3,.5),uv));
-gl_FragColor =vec4(0.,0.,((p0>.79)&&(p0<.8))?1.:0.,1.);
-gl_FragColor+=vec4(0.,0.,((p1>.79)&&(p1<.8))?1.:0.,1.);
-gl_FragColor+=vec4(0.,0.,((p2>.79)&&(p2<.8))?1.:0.,1.);
-
-}`
-,side:THREE.DoubleSide}))
-plane.position.y = -.1;
-plane.rotation.x = Math.PI*.5;
-scene.add(plane)
-*/

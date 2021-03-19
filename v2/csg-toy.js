@@ -124,23 +124,9 @@ document.addEventListener('init', (e)=>{
 
         if (e.code === 'KeyA')
             (elements.selectedCount > 0) ? elements.forEach((e,i)=>elements.deselect(i)) : elements.forEach((e,i)=>elements.select(i))
-
-        if (e.code === 'KeyW') {
-            let mats={}
-            scene.traverse((e)=>(e.isMesh)&&(mats[e.material.uuid]=e.material))
-            for(let f in mats){
-                let m=mats[f]
-                if (m.userData.saveWireframe === undefined) {
-                    m.userData.saveWireframe = m.wireframe
-                    m.wireframe = true;
-                } else {
-                    m.wireframe = m.userData.saveWireframe
-                    delete m.userData.saveWireframe;
-                }
-            }
-        }
     }
     , false);
+    
     //CanvasRecorder(renderer.domElement)
     //window.canvasRecorder.style.left = '0px'
 
