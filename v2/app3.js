@@ -145,6 +145,12 @@ scene.add(light1);
 
             update() {
                 if (this.selectedCount) {
+                    if(this.lastSelectedId != this.selection[0].uuid){
+                        this.lastSelectedId = this.selection[0].uuid
+                        if(!this.selectionChangedEvent)this.selectionChangedEvent = new Event('selectionChanged')
+                        this.selectionChangedEvent.app = this;
+                        document.dispatchEvent(this.selectionChangedEvent)
+                    }
                     this.forSelected(e=>scene.attach(e))
                     transformGroup.position.set(0, 0, 0);
                     this.forSelected(e=>transformGroup.position.add(e.position));

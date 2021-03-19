@@ -28,11 +28,7 @@ let backMaterial = new THREE.MeshStandardMaterial({
     side: THREE.BackSide,
     depthWrite: false
 });
-import {
-	BufferGeometry,
-	Float32BufferAttribute,
-	Geometry
-} from '../lib/three.module.js';
+import {BufferGeometry, Float32BufferAttribute, Geometry} from '../lib/three.module.js';
 
 class FNode {
 
@@ -68,7 +64,6 @@ class FNode {
         return p
     }
 }
-
 
 class Prims {
     static bindNodeToMesh(e, m) {
@@ -117,7 +112,6 @@ class Prims {
                 //CSG.fromMesh(b.getMesh());
                 let op = o;
                 b.operation && (op = b.operation)
-
 
                 bspA = bspA[op](bspB);
 
@@ -208,7 +202,9 @@ class FCAD {
             this.nodes.push(node);
             return node;
         }
-        ;
+        
+        this.addNode = addNode;
+
         function nnode(type, args) {
             return addNode(new FNode(self,type,Array.prototype.slice.call(args)));
         }
@@ -327,10 +323,7 @@ class FCAD {
 
                     let ringMesh = meshes[0]
                     ringMesh.scale.multiplyScalar(.78)
-                    ringMesh.position.y-=.46
-
-
-
+                    ringMesh.position.y -= .46
 
                     let textMesh = meshes[1]
                     textMesh.position.x -= .6
@@ -342,27 +335,27 @@ class FCAD {
 
                     let sroot = new THREE.Group();
                     scene.add(sroot)
-let box;
-                        let bspBox
-                        let bspRing
-                        let bspPlate
-                        let bx;
+                    let box;
+                    let bspBox
+                    let bspRing
+                    let bspPlate
+                    let bx;
                     let regen = (str)=>{
                         let mshes = []
-                        sroot.traverse(e=>e.isMesh&&mshes.push[e])
-                        while (sroot.children.length){
+                        sroot.traverse(e=>e.isMesh && mshes.push[e])
+                        while (sroot.children.length) {
                             sroot.remove(sroot.children[0])
                         }
                         mshes.forEach(m=>m.geometry.destroy())
-                        
+
                         let tm = genText(str)
                         sroot.add(tm)
 
                         textMesh = tm;
                         textMesh.updateMatrixWorld()
                         //
-                        if(!box){
-                             box = new THREE.Box3();
+                        if (!box) {
+                            box = new THREE.Box3();
                             box.setFromObject(textMesh);
                             box.expandByScalar(.01)
                             let sz = box.getSize(new THREE.Vector3())
@@ -372,17 +365,17 @@ let box;
                             bx.material = bx.material.clone()
                             bx.material.transparent = true;
                             bx.material.opacity = .5;
-                        bspBox = CSG.fromMesh(bx)
-                        bspRing = CSG.fromMesh(ringMesh)
+                            bspBox = CSG.fromMesh(bx)
+                            bspRing = CSG.fromMesh(ringMesh)
 
                             let mesh = CSG.toMesh(bspBox.intersect(bspRing), ringMesh.matrix, ringMesh.material)
                             scene.add(mesh)
                             mesh.position.z -= 2
                             bspPlate = CSG.fromMesh(mesh)
 
-                        mesh = CSG.toMesh(bspRing.subtract(bspBox), ringMesh.matrix, ringMesh.material)
-                        scene.add(mesh)
-                        mesh.position.z -= 4
+                            mesh = CSG.toMesh(bspRing.subtract(bspBox), ringMesh.matrix, ringMesh.material)
+                            scene.add(mesh)
+                            mesh.position.z -= 4
 
                         }
                         sroot.add(ringMesh)
@@ -391,23 +384,37 @@ let box;
 
                         let bspText = CSG.fromMesh(textMesh)
 
-
                         //bspRing = JSON.stringify(bspRing)
                         //bspRing = JSON.parse(bspRing)
 
                         let now = performance.now()
 
-                       let mesh = CSG.toMesh(bspPlate.subtract(bspText), ringMesh.matrix, ringMesh.material)
-                        sroot.add(mesh)
-                        mesh.position.z -= 4
-                        console.log("gentxt:", performance.now() - now)
+
+
+                        if(CSG.doAsync){
+
+                        	let js =CSG.fromJSON(JSON.parse(JSON.stringify(bspPlate)))
+                        	CSG.doAsync(bspPlate,'subtract',bspText).then((result)=>{
+                                let mesh = CSG.toMesh(result,ringMesh.matrix,ringMesh.material);
+								sroot.add(mesh)
+								mesh.position.z -= 4
+								console.log("gentxt:", performance.now() - now)
+                        	})
+                        }else{
+
+							let mesh = CSG.toMesh(bspPlate.subtract(bspText), ringMesh.matrix, ringMesh.material)
+							sroot.add(mesh)
+							mesh.position.z -= 4
+							console.log("gentxt:", performance.now() - now)
+
+                        }
 
                     }
 
                     regen(`Hello three.js!
 here is a wider line..
 multiline text.`)
-/*
+                    /*
                     setInterval(()=>{
                         regen(`${Math.random()}
 ${Math.random()}                      
@@ -415,7 +422,7 @@ ${(performance.now() / 1000) | 0}`)
                     }
                     , 2000)
                     */
-                    
+
                     let now = performance.now()
                     genMS = now - genMS
                     console.log("regen:", genMS)
@@ -430,11 +437,46 @@ ${(performance.now() / 1000) | 0}`)
                 )
             }
             )
-
         })
-
     }
 }
+
+fetch('../csg-lib.js').then(function(response) {
+    return response.text().then(function(text) {
+        text = text.slice(0, text.lastIndexOf('export'));
+        const code = text + `
+			self.onmessage=(message)=>{
+			let task = JSON.parse(message.data)
+			console.log("Got task:"+task.op+' '+task.taskId)
+			postMessage(JSON.stringify({
+				taskId:task.taskId,
+				result : CSG.fromJSON(task.a)[task.op](CSG.fromJSON(task.b))
+			}))
+		}
+        console.log('CSG worker started!')`
+        const blob = new Blob([code],{
+            type: 'application/javascript'
+        })
+        const worker = new Worker(URL.createObjectURL(blob))
+        let taskId=0;
+        let tasks={}
+        worker.onmessage = function(e) {
+           let rslt = JSON.parse(e.data)
+           tasks[rslt.taskId].resolve(CSG.fromJSON(rslt.result))
+		  console.log('Message received from worker');
+		}
+        CSG.doAsync=(a,op,b)=>{
+        	let task={a,op,b,taskId}
+        	tasks[taskId]=task;
+        	taskId++;
+        	task.result = new Promise((resolve,reject)=>{
+        		task.resolve = resolve;
+                worker.postMessage(JSON.stringify(task))
+        	})
+        	return task.result
+        }
+    });
+});
 
 let defaultScene = `
 [
@@ -512,10 +554,10 @@ let defaultScene = `
 }
 ]
 `
+
+FCAD.FNode = FNode;
+
 export default FCAD;
-
-
-
 
 /*
 //import {ConvexGeometry} from "../lib/jsm/ConvexGeometry.js";

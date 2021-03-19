@@ -19,7 +19,7 @@ function init(){
     let opAddButtonEvt = new Event('addButton')
     let addBtnClick =(e)=>{
         opAddButtonEvt.primType = e.target.innerText
-        setTimeout(()=>document.dispatchEvent(opButtonEvt),0)
+        setTimeout(()=>document.dispatchEvent(opAddButtonEvt),0)
     }
     w.csgAddBox && (w.csgAddBox.onclick = addBtnClick)
     w.csgAddSphere && (w.csgAddSphere.onclick = addBtnClick)
@@ -31,6 +31,46 @@ function init(){
         window.codeView.innerText =  '[code]\n'+JSON.stringify(e.jsobj, undefined, 4);
         window.codeView.onclick = cvclick
     })
+
+    let selection
+    let elements;
+    document.addEventListener('selectionChanged',(e)=>{
+        selection = e.app.selection
+        elements = e.app.elements;
+        if(selection.length){
+            let fcad = selection[0].userData.node.fcad;
+            let top=fcad.nodes.length-1;
+            let topNode = fcad.nodes[top]
+            window.elemIndexSlider.min = 0;
+            window.elemIndexSlider.max = top;
+            let id = selection[0].userData.node.id;
+            let val=0;
+            topNode.args.forEach((e,i)=>(e.id==id)&&(val=i))
+            window.elemIndexSlider.value = val;
+        }
+    })
+    window.elemIndexSlider.oninput=(e)=>{
+        if(selection && selection.length){
+            let destId=parseInt(e.target.value)
+            console.log(e.target.value)
+            let fcad = selection[0].userData.node.fcad;
+            let id = selection[0].userData.node.id;
+            let curId=0;
+            let top=fcad.nodes.length-1;
+            let topNode = fcad.nodes[top]
+            let tnodes = topNode.args;
+            tnodes.forEach((e,i)=>(e.id==id)&&(curId=i))
+            if((curId>=0)&&(curId<top)&&(destId>=0)&&(destId<top)&&(destId!=curId)){
+               let swp = tnodes[curId]
+               tnodes[curId] = tnodes[destId]
+               tnodes[destId] = swp;
+               swp=tnodes[curId].id;
+               tnodes[curId].id=tnodes[destId];
+               tnodes[destId].id=swp;
+               fcad.updateCSG();
+            }
+        }
+    }
 }
 
 export default init;

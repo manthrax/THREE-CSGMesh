@@ -74,6 +74,8 @@ document.addEventListener('init', (e)=>{
         elements.update()
     }
 
+    fc.updateCSG = updateCSG
+
     transformControls.addEventListener("objectChange", event=>{
         //console.log("OC")
         if (elements.selectedCount) {
@@ -95,6 +97,15 @@ document.addEventListener('init', (e)=>{
 
         elements.set(fc.update());
     }
+
+    document.addEventListener("addButton", e=>{
+        console.log("Add prim:",e.primType)
+        let top = fc.nodes.pop()
+        let nn = new FCAD.FNode(fc,e.primType).position(2,2,2)
+        fc.addNode(nn);
+        fc.addNode(top)
+        top.args.push(nn);
+    })
 
     document.addEventListener("opButton", e=>setOperationsOnSelection(e.operation))
     window.addEventListener("keydown", e=>{
