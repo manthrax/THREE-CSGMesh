@@ -10,7 +10,7 @@ THREE.js rework by thrax under MIT license.
 Here's a running demo
 http://vectorslave.com/csg/demos/CSGDemo.html
 
-[![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/assets/CSGScreenShot.png)](#screenshot)
+[![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/assets/CSGScreenshot.jpg)](#screenshot)
 
 And a shinier, slightly more complex demo:
 http://vectorslave.com/csg/demos/CSGShinyDemo.html
@@ -20,8 +20,12 @@ http://vectorslave.com/csg/demos/CSGShinyDemo.html
 And a more complex example showing a text mesh cut into another complex mesh via an intermediate cube:
 http://vectorslave.com/csg/v2/index.html
 
-[![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/assets/v2test.jpg)](#screenshot)
+[![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/assets/V2TestScreenshot.jpg)](#screenshot)
 
+An example showing multiple material groups, and vertex color channel:
+http://vectorslave.com/csg/demos/CSGStress.html
+
+[![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/assets/CGStressScreenshot.jpg)](#screenshot)
 
 CSG is the name of a technique for generating a new geometry as a function of two input geometries.
 
