@@ -186,7 +186,8 @@ CSG.toMesh = function(csg, toMatrix, toMaterial) {
     geom.computeBoundingBox();
     let m = new THREE.Mesh(geom,toMaterial);
     m.matrix.copy(toMatrix);
-    m.matrix.decompose(m.position, m.rotation, m.scale)
+    m.matrix.decompose(m.position, m.quaternion, m.scale)
+    m.rotation.setFromQuaternion(m.quaternion)
     m.updateMatrixWorld();
     m.castShadow = m.receiveShadow = true;
     return m
