@@ -180,15 +180,16 @@ let tv1=new Vector()
 
 class Vertex {
 
-    constructor(pos, normal, uv) {
+    constructor(pos, normal, uv, color) {
         this.pos = new Vector().copy(pos);
         this.normal = new Vector().copy(normal);
         this.uv = new Vector().copy(uv);
         this.uv.z=0;
+        color && (this.color = new Vector().copy(color));
     }
 
     clone() {
-        return new Vertex(this.pos.clone(),this.normal.clone(),this.uv.clone());
+        return new Vertex(this.pos,this.normal,this.uv,this.color);
     }
 
     // Invert all orientation-specific data (e.g. vertex normal). Called when the
@@ -201,7 +202,7 @@ class Vertex {
     // interpolating all properties using a parameter of `t`. Subclasses should
     // override this to interpolate additional properties.
     interpolate(other, t) {
-        return new Vertex(this.pos.clone().lerp(other.pos, t),this.normal.clone().lerp(other.normal, t),this.uv.clone().lerp(other.uv, t))
+        return new Vertex(this.pos.clone().lerp(other.pos, t),this.normal.clone().lerp(other.normal, t),this.uv.clone().lerp(other.uv, t), this.color&&other.color&&this.color.clone().lerp(other.color,t))
     }
 }
 ;

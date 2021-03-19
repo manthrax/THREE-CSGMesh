@@ -8,7 +8,7 @@ import {CSG, Vertex, Vector, Polygon} from "./csg-lib.js"
 
 //import {Geometry} from "../three.js-dev/examples/jsm/deprecated/Geometry.js";
 
-CSG.fromGeometry = function(geom) {
+CSG.fromGeometry = function(geom,objectIndex) {
     //   if (geom.isBufferGeometry)
     //        geom = new Geometry().fromBufferGeometry(geom)
     let polys = []
@@ -21,13 +21,14 @@ CSG.fromGeometry = function(geom) {
             let vertices = []
             for (let j = 0; j < 3; j++)
                 vertices.push(new Vertex(vs[f[fm[j]]],f.vertexNormals[j],geom.faceVertexUvs[0][i][j]))
-            polys.push(new Polygon(vertices))
+            polys.push(new Polygon(vertices, objectIndex))
         }
     } else if (geom.isBufferGeometry) {
         let vertices, normals, uvs
         let posattr = geom.attributes.position
         let normalattr = geom.attributes.normal
         let uvattr = geom.attributes.uv
+        let colorattr = geom.attributes.color
         let index;
         if (geom.index)
             index = geom.index.array;
@@ -65,9 +66,9 @@ CSG.fromGeometry = function(geom) {
                     x: u,
                     y: v,
                     z: 0
-                });
+                },colorattr&&{x:colorattr.array[vt],y:colorattr.array[vt+1],z:colorattr.array[vt+2]});
             }
-            polys[pli] = new Polygon(vertices)
+            polys[pli] = new Polygon(vertices,objectIndex)
         }
     } else
         console.error("Unsupported CSG input type:" + geom.type)
@@ -76,8 +77,8 @@ CSG.fromGeometry = function(geom) {
 
 let ttvv0 = new THREE.Vector3()
 let tmpm3 = new THREE.Matrix3();
-CSG.fromMesh = function(mesh) {
-    let csg = CSG.fromGeometry(mesh.geometry)
+CSG.fromMesh = function(mesh,objectIndex) {
+    let csg = CSG.fromGeometry(mesh.geometry,objectIndex)
     tmpm3.getNormalMatrix(mesh.matrix);
     for (let i = 0; i < csg.polygons.length; i++) {
         let p = csg.polygons[i]
@@ -155,13 +156,19 @@ CSG.toMesh = function(csg, toMatrix, toMaterial) {
         let vertices = nbuf3(triCount * 3 * 3)
         let normals = nbuf3(triCount * 3 * 3)
         let uvs = nbuf2(triCount * 2 * 3)
-        let vtop = 0;
-        let ntop = 0;
-        let uvtop = 0;
+        let colors;
+        let grps=[]
         ps.forEach(p=>{
             let pvs = p.vertices
             let pvlen = pvs.length
+            if(p.shared!==undefined){
+                if(!grps[p.shared])grps[p.shared]=[]
+            }
+            if(pvlen&&pvs[0].color!==undefined){
+                if(!colors)colors = nbuf3(triCount*3*3);
+            }
             for (let j = 3; j <= pvlen; j++) {
+                (p.shared!==undefined) && (grps[p.shared].push(vertices.top/3,(vertices.top/3)+1,(vertices.top/3)+2));
                 vertices.write(pvs[0].pos)
                 vertices.write(pvs[j-2].pos)
                 vertices.write(pvs[j-1].pos)
@@ -171,12 +178,24 @@ CSG.toMesh = function(csg, toMatrix, toMaterial) {
                 uvs.write(pvs[0].uv)
                 uvs.write(pvs[j-2].uv)
                 uvs.write(pvs[j-1].uv)
+                colors&&(colors.write(pvs[0].color)||colors.write(pvs[j-2].color)||colors.write(pvs[j-1].color))
             }
         }
         )
         geom.setAttribute('position', new THREE.BufferAttribute(vertices.array,3));
         geom.setAttribute('normal', new THREE.BufferAttribute(normals.array,3));
         geom.setAttribute('uv', new THREE.BufferAttribute(uvs.array,2));
+        colors && geom.setAttribute('color', new THREE.BufferAttribute(colors.array,3));
+        if(grps.length){
+            let index = []
+            let gbase=0;
+            for(let gi=0;gi<grps.length;gi++){
+                geom.addGroup(gbase,grps[gi].length,gi)
+                gbase+=grps[gi].length
+                index=index.concat(grps[gi]);
+            }
+            geom.setIndex(index)
+        }
         g2 = geom;
     }
 
