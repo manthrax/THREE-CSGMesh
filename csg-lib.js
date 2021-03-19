@@ -231,18 +231,18 @@ class Plane {
     // respect to this plane. Polygons in front or in back of this plane go into
     // either `front` or `back`.
     splitPolygon(polygon, coplanarFront, coplanarBack, front, back) {
-        var COPLANAR = 0;
-        var FRONT = 1;
-        var BACK = 2;
-        var SPANNING = 3;
+        const COPLANAR = 0;
+        const FRONT = 1;
+        const BACK = 2;
+        const SPANNING = 3;
 
         // Classify each point as well as the entire polygon into one of the above
         // four classes.
-        var polygonType = 0;
-        var types = [];
-        for (var i = 0; i < polygon.vertices.length; i++) {
-            var t = this.normal.dot(polygon.vertices[i].pos) - this.w;
-            var type = (t < -Plane.EPSILON) ? BACK : (t > Plane.EPSILON) ? FRONT : COPLANAR;
+        let polygonType = 0;
+        let types = [];
+        for (let i = 0; i < polygon.vertices.length; i++) {
+            let t = this.normal.dot(polygon.vertices[i].pos) - this.w;
+            let type = (t < -Plane.EPSILON) ? BACK : (t > Plane.EPSILON) ? FRONT : COPLANAR;
             polygonType |= type;
             types.push(type);
         }
@@ -259,21 +259,21 @@ class Plane {
             back.push(polygon);
             break;
         case SPANNING:
-            var f = []
+            let f = []
               , b = [];
-            for (var i = 0; i < polygon.vertices.length; i++) {
-                var j = (i + 1) % polygon.vertices.length;
-                var ti = types[i]
+            for (let i = 0; i < polygon.vertices.length; i++) {
+                let j = (i + 1) % polygon.vertices.length;
+                let ti = types[i]
                   , tj = types[j];
-                var vi = polygon.vertices[i]
+                let vi = polygon.vertices[i]
                   , vj = polygon.vertices[j];
                 if (ti != BACK)
                     f.push(vi);
                 if (ti != FRONT)
                     b.push(ti != BACK ? vi.clone() : vi);
                 if ((ti | tj) == SPANNING) {
-                    var t = (this.w - this.normal.dot(vi.pos)) / this.normal.dot(tv0.copy(vj.pos).sub(vi.pos));
-                    var v = vi.interpolate(vj, t);
+                    let t = (this.w - this.normal.dot(vi.pos)) / this.normal.dot(tv0.copy(vj.pos).sub(vi.pos));
+                    let v = vi.interpolate(vj, t);
                     f.push(v);
                     b.push(v.clone());
                 }
@@ -294,7 +294,6 @@ Plane.EPSILON = 1e-5;
 
 Plane.fromPoints = function(a, b, c) {
     let n = tv0.copy(b).sub(a).cross(tv1.copy(c).sub(a)).normalize()
-    //var n = b.minus(a).cross(c.minus(a)).unit();
     return new Plane(n.clone(),n.dot(a));
 }
 
@@ -317,15 +316,10 @@ class Polygon {
         this.plane = Plane.fromPoints(vertices[0].pos, vertices[1].pos, vertices[2].pos);
     }
     clone() {
-        var vertices = this.vertices.map(function(v) {
-            return v.clone();
-        });
-        return new Polygon(vertices,this.shared);
+        return new Polygon(this.vertices.map(v=>v.clone()),this.shared);
     }
     flip() {
-        this.vertices.reverse().map(function(v) {
-            v.flip();
-        });
+        this.vertices.reverse().map(v=>v.flip())
         this.plane.flip();
     }
 }
@@ -348,25 +342,23 @@ class Node {
             this.build(polygons);
     }
     clone() {
-        var node = new Node();
+        let node = new Node();
         node.plane = this.plane && this.plane.clone();
         node.front = this.front && this.front.clone();
         node.back = this.back && this.back.clone();
-        node.polygons = this.polygons.map(function(p) {
-            return p.clone();
-        });
+        node.polygons = this.polygons.map(p=>p.clone());
         return node;
     }
 
     // Convert solid space to empty space and empty space to solid space.
     invert() {
-        for (var i = 0; i < this.polygons.length; i++)
+        for (let i = 0; i < this.polygons.length; i++)
             this.polygons[i].flip();
         
         this.plane && this.plane.flip();
         this.front && this.front.invert();
         this.back && this.back.invert();
-        var temp = this.front;
+        let temp = this.front;
         this.front = this.back;
         this.back = temp;
     }
@@ -376,9 +368,9 @@ class Node {
     clipPolygons(polygons) {
         if (!this.plane)
             return polygons.slice();
-        var front = []
+        let front = []
           , back = [];
-        for (var i = 0; i < polygons.length; i++) {
+        for (let i = 0; i < polygons.length; i++) {
             this.plane.splitPolygon(polygons[i], front, back, front, back);
         }
         if (this.front)
@@ -402,7 +394,7 @@ class Node {
 
     // Return a list of all polygons in this BSP tree.
     allPolygons() {
-        var polygons = this.polygons.slice();
+        let polygons = this.polygons.slice();
         if (this.front)
             polygons = polygons.concat(this.front.allPolygons());
         if (this.back)
@@ -419,9 +411,9 @@ class Node {
             return;
         if (!this.plane)
             this.plane = polygons[0].plane.clone();
-        var front = []
+        let front = []
           , back = [];
-        for (var i = 0; i < polygons.length; i++) {
+        for (let i = 0; i < polygons.length; i++) {
             this.plane.splitPolygon(polygons[i], this.polygons, this.polygons, front, back);
         }
         if (front.length) {

@@ -35,43 +35,38 @@
     camera.position.set(10,10,10)
     let controls = new OrbitControls(camera,container)
     function mkCanvas(dim) {
-        var canvas = document.createElement('canvas');
+        let canvas = document.createElement('canvas');
         canvas.width = canvas.height = dim;
         return canvas;
     }
     function makeProceduralTexture(dim,fn){
-        var canv = mkCanvas(dim);
-        var ctx = canv.getContext('2d');
-        var pix = ctx.getImageData(0,0,dim,dim);
-        var u32view = new DataView(pix.data.buffer);
-        var idx = -4;
-        for(var j=0;j<dim;j++)
-        for(var i=0;i<dim;i++)
+        let canv = mkCanvas(dim);
+        let ctx = canv.getContext('2d');
+        let pix = ctx.getImageData(0,0,dim,dim);
+        let u32view = new DataView(pix.data.buffer);
+        let idx = -4;
+        for(let j=0;j<dim;j++)
+        for(let i=0;i<dim;i++)
             u32view.setUint32(idx+=4,fn(j/dim,i/dim)|0);
         ctx.putImageData(pix,0,0);
-        var tex = new THREE.Texture(canv);
+        let tex = new THREE.Texture(canv);
         tex.needsUpdate = true;
         return tex;
     }
-    var tx = makeProceduralTexture(256,(u,v)=>{
-        var rb = ((Math.random()*128)|0) * (((((u*2)&1)^((v*2)&1))|0)?1:2)
+    let tx = makeProceduralTexture(256,(u,v)=>{
+        let rb = ((Math.random()*128)|0) * (((((u*2)&1)^((v*2)&1))|0)?1:2)
         return (rb*256)|(rb*256*256)|(rb*256*256*256)|0x000000ff
     })
     tx.repeat.set(2,2);
     tx.wrapS = tx.wrapT = THREE.RepeatWrapping
 
 
-    var tx = makeProceduralTexture(256,(u,v)=>{
-        var rb = ((Math.random()*128)|0) * (((((u*2)&1)^((v*2)&1))|0)?1:2)
-        return (rb*256)|(rb*256*256)|(rb*256*256*256)|0x000000ff
-    })
     let {abs,sin,cos,min,max,random} = Math;
-    var tx1 = makeProceduralTexture(256,(u,v)=>{
-        var rb = ((Math.random()*128)|0) * (((((u*2)&1)^((v*2)&1))|0)?1:2)
+    let tx1 = makeProceduralTexture(256,(u,v)=>{
+        let rb = ((Math.random()*128)|0) * (((((u*2)&1)^((v*2)&1))|0)?1:2)
         let r = (abs(sin(v*30))*256)|0
         let g = (abs(cos(u*40))*256)|0
         let b = (abs(sin(v*50))*256)|0
-        var rb = ((Math.random()*128)|0) * (((((u*2)&1)^((v*2)&1))|0)?1:2)
         return (r*256)|(g*256*256)|(b*256*256*256)|0x000000ff
     })
 
@@ -84,7 +79,7 @@
         light1.position.set(rnd(20),rnd(3)+5,rnd(20))
         scene.add(light1);
     }
-    for(var i=0;i<8;i++)mkLight()
+    for(let i=0;i<8;i++)mkLight()
     let box = new THREE.Mesh(new THREE.BoxBufferGeometry(2,2,2),mkMat('grey'))
     scene.add(box)
     let sphere = new THREE.Mesh(new THREE.SphereBufferGeometry(1.2,8,8),mkMat('grey'))
@@ -99,10 +94,10 @@
     addColors(sphere.geometry)
 
     function doCSG(a,b,op,mat,mat1=mat){
-        var bspA = CSG.fromMesh( a, 0);
-        var bspB = CSG.fromMesh( b, 1);
-        var bspC = bspA[op]( bspB );
-        var result = CSG.toMesh( bspC, a.matrix );
+        let bspA = CSG.fromMesh( a, 0);
+        let bspB = CSG.fromMesh( b, 1);
+        let bspC = bspA[op]( bspB );
+        let result = CSG.toMesh( bspC, a.matrix );
         result.material = [mat,mat1];
         result.castShadow  = result.receiveShadow = true;
         return result;
@@ -115,8 +110,8 @@
     let results = []
     
     function recompute(){
-        for(var i=0;i<results.length;i++){
-            var m = results[i]
+        for(let i=0;i<results.length;i++){
+            let m = results[i]
             m.parent.remove(m)
             m.geometry.dispose();
         }
@@ -133,8 +128,8 @@
         results.push(doCSG(sphere,box,'intersect',intersectMaterial,difMaterial))
         results.push(doCSG(sphere,box,'union',unionMaterial,difMaterial))
 
-        for(var i=0;i<results.length;i++){
-            var r = results[i];
+        for(let i=0;i<results.length;i++){
+            let r = results[i];
             scene.add(r)
 
             r.position.z += -5 + ((i%3)*5)

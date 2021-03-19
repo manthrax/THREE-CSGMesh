@@ -306,8 +306,8 @@ class FCAD {
                 return tm
             }
 
-            glbLoader.load('Blonk.glb', (glb)=>{
-                glbLoader.load('text2.glb', (glbt)=>{
+            glbLoader.load('../assets/Blonk.glb', (glb)=>{
+                glbLoader.load('../assets/text2.glb', (glbt)=>{
 
                     let genMS = performance.now()
                     let meshes = []

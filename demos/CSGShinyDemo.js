@@ -28,8 +28,8 @@ UI({
     camera
 })
 
-var tx = env.makeProceduralTexture(1024, (u,v)=>{
-    var rb = ((Math.random() * 128) | 0) * (((((u * 2) & 1) ^ ((v * 2) & 1)) | 0) ? 1 : 2)
+let tx = env.makeProceduralTexture(1024, (u,v)=>{
+    let rb = ((Math.random() * 128) | 0) * (((((u * 2) & 1) ^ ((v * 2) & 1)) | 0) ? 1 : 2)
     return (rb * 256) | (rb * 256 * 256) | (rb * 256 * 256 * 256) | 0x000000ff
 }
 )
@@ -46,7 +46,7 @@ let rnd = (rng)=>((Math.random() * 2) - 1) * (rng || 1)
 let light1 = new THREE.DirectionalLight();
 light1.position.set(2.8, 12, -35)
 light1.castShadow = true;
-var setShadowSize = (sz,mapSz)=>{
+let setShadowSize = (sz,mapSz)=>{
     light1.shadow.camera.left = sz;
     light1.shadow.camera.bottom = sz;
     light1.shadow.camera.right = -sz;
@@ -83,7 +83,7 @@ let subMeshes = [subBox, sphere, cylinder]
 let light2 = new THREE.PointLight('white',1,10,1);
 scene.add(light2)
 light2.position.set(5, 5, 5)
-var lightSphere = sphere.clone();
+let lightSphere = sphere.clone();
 
 light2.add(lightSphere)
 lightSphere.material = lightSphere.material.clone();
@@ -97,10 +97,10 @@ lightSphere.scale.multiplyScalar(0.1)
 function doCSG(a, b, op, mat) {
     a.updateMatrixWorld()
     b.updateMatrixWorld()
-    var bspA = CSG.fromMesh(a);
-    var bspB = CSG.fromMesh(b);
-    var bspC = bspA[op](bspB);
-    var result = CSG.toMesh(bspC, a.matrix);
+    let bspA = CSG.fromMesh(a);
+    let bspB = CSG.fromMesh(b);
+    let bspC = bspA[op](bspB);
+    let result = CSG.toMesh(bspC, a.matrix);
     result.material = mat;
     result.castShadow = result.receiveShadow = true;
     return result;
@@ -112,8 +112,8 @@ let unionMaterial = mkMat('lightblue');
 let results = []
 
 function recompute() {
-    for (var i = 0; i < results.length; i++) {
-        var m = results[i]
+    for (let i = 0; i < results.length; i++) {
+        let m = results[i]
         m.parent.remove(m)
         m.geometry.dispose();
     }
@@ -130,8 +130,8 @@ function recompute() {
     results.push(doCSG(subMesh, box, 'intersect', intersectMaterial))
     results.push(doCSG(subMesh, box, 'union', unionMaterial))
 
-    for (var i = 0; i < results.length; i++) {
-        var r = results[i];
+    for (let i = 0; i < results.length; i++) {
+        let r = results[i];
         scene.add(r)
 
         r.position.z += -5 + ((i % 3) * 5)
@@ -253,7 +253,7 @@ let roundBox = (size,radius,count)=>{
     let dsp = sp0.clone()
     dsp.userData.op = 'subtract'
     dsp.position.multiplyScalar((size + radius) / size)
-    for (var i = 0; i < dots.length; i++) {
+    for (let i = 0; i < dots.length; i++) {
         mkref(dsp, dots[i][0], dots[i][1], dots[i][2])
     }
     // mxyz.position.y+=4;
@@ -269,15 +269,15 @@ let roundBox = (size,radius,count)=>{
 
         let a = meshes[0]
         a.updateMatrixWorld()
-        var bspA = CSG.fromMesh(a);
+        let bspA = CSG.fromMesh(a);
         for (let x = 1, ct = meshes.length; x < ct; x++) {
             let b = meshes[x]
             b.updateMatrixWorld()
-            var bspB = CSG.fromMesh(b);
+            let bspB = CSG.fromMesh(b);
             bspA = bspA[b.userData.op](bspB);
         }
 
-        var result = CSG.toMesh(bspA, a.matrix);
+        let result = CSG.toMesh(bspA, a.matrix);
         result.material = mat;
         result.castShadow = result.receiveShadow = true;
         return result;
@@ -329,18 +329,18 @@ function checkForResize() {
         renderer.setSize(width, height, true)
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
-        var pixelRatio = renderer.getPixelRatio()
+        let pixelRatio = renderer.getPixelRatio()
         env.resize(width, height)
     }
 }
 
-var meshIdx = -1;
+let meshIdx = -1;
 let subMesh;
 function animate(time) {
     checkForResize();
 
-    var tm = time * 0.001;
-    var nextIdx = ((tm * 0.1) % subMeshes.length) | 0;
+    let tm = time * 0.001;
+    let nextIdx = ((tm * 0.1) % subMeshes.length) | 0;
     if (meshIdx != nextIdx) {
         if (subMesh)
             scene.remove(subMesh)

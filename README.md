@@ -56,8 +56,8 @@ scene.add(CSG.toMesh(CSG.subtract(CSG.fromMesh(a),CSG.fromMesh(b)),a.material))
 
 // Make 2 box meshes.. 
 
-var meshA = new THREE.Mesh(new THREE.BoxGeometry(1,1,1))
-var meshB = new THREE.Mesh(new THREE.BoxGeometry(1,1,1))
+let meshA = new THREE.Mesh(new THREE.BoxGeometry(1,1,1))
+let meshB = new THREE.Mesh(new THREE.BoxGeometry(1,1,1))
 
 //offset one of the boxes by half its width..
 
@@ -70,16 +70,16 @@ meshB.updateMatrix()
 
  //Create a bsp tree from each of the meshes
  
-var bspA = CSG.fromMesh( meshA )                        
-var bspB = CSG.fromMesh( meshB )
+let bspA = CSG.fromMesh( meshA )                        
+let bspB = CSG.fromMesh( meshB )
 
 // Subtract one bsp from the other via .subtract... other supported modes are .union and .intersect
  
-var bspResult = bspA.subtract(bspB)
+let bspResult = bspA.subtract(bspB)
 
 //Get the resulting mesh from the result bsp, and assign meshA.material to the resulting mesh
 
-var meshResult = CSG.toMesh( bspResult, meshA.matrix, meshA.material )
+let meshResult = CSG.toMesh( bspResult, meshA.matrix, meshA.material )
 
 ```
 

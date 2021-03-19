@@ -32,7 +32,7 @@ function reindexBufferGeometry(bufferGeometry,options){
         }
         indices.push(idx)
     }
-    var outAttrs={}
+    let outAttrs={}
     for(let j in attribs){
         let attr=attribs[j];
         outAttrs[j]=[];
@@ -52,9 +52,9 @@ function reindexBufferGeometry(bufferGeometry,options){
 
 
 (function(){
-    var bgeom = new THREE.SphereBufferGeometry(1,32,32)
-    var geom = new THREE.SphereGeometry(1,32,32)
-    var mesh = new THREE.Mesh(new THREE.BufferGeometry().fromGeometry(geom))
+    let bgeom = new THREE.SphereBufferGeometry(1,32,32)
+    let geom = new THREE.SphereGeometry(1,32,32)
+    let mesh = new THREE.Mesh(new THREE.BufferGeometry().fromGeometry(geom))
     reindexBufferGeometry( mesh.geometry )
 })()
 

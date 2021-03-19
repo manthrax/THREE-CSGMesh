@@ -9,8 +9,8 @@ import app from "../v2/app3.js"
 let {renderer,scene,camera} = app;
 
 UI(app);
-var tx = app.environment.makeProceduralTexture(256,(u,v)=>{
-    var rb = ((Math.random()*128)|0) * (((((u*2)&1)^((v*2)&1))|0)?1:2)
+let tx = app.environment.makeProceduralTexture(256,(u,v)=>{
+    let rb = ((Math.random()*128)|0) * (((((u*2)&1)^((v*2)&1))|0)?1:2)
     return (rb*256)|(rb*256*256)|(rb*256*256*256)|0x000000ff
 })
 tx.repeat.set(2,2);
@@ -25,10 +25,10 @@ let sphere = new THREE.Mesh(new THREE.SphereGeometry(1.2,8,8),mkMat('grey'))
 scene.add(sphere)
 
 function doCSG(a,b,op,mat){
-    var bspA = CSG.fromMesh( a );
-    var bspB = CSG.fromMesh( b );
-    var bspC = bspA[op]( bspB );
-    var result = CSG.toMesh( bspC, a.matrix );
+    let bspA = CSG.fromMesh( a );
+    let bspB = CSG.fromMesh( b );
+    let bspC = bspA[op]( bspB );
+    let result = CSG.toMesh( bspC, a.matrix );
     result.material = mat;
     result.castShadow  = result.receiveShadow = true;
     return result;
@@ -40,8 +40,8 @@ let unionMaterial = mkMat('blue');
 let results = []
 
 function recompute(){
-    for(var i=0;i<results.length;i++){
-        var m = results[i]
+    for(let i=0;i<results.length;i++){
+        let m = results[i]
         m.parent.remove(m)
         m.geometry.dispose();
     }
@@ -58,8 +58,8 @@ function recompute(){
     results.push(doCSG(sphere,box,'intersect',intersectMaterial))
     results.push(doCSG(sphere,box,'union',unionMaterial))
 
-    for(var i=0;i<results.length;i++){
-        var r = results[i];
+    for(let i=0;i<results.length;i++){
+        let r = results[i];
         r.castShadow = r.receiveShadow = true;
         scene.add(r)
 
