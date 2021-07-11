@@ -8,22 +8,22 @@ Copyright (c) 2011 Evan Wallace (http://madebyevan.com/), under the MIT license.
 THREE.js rework by thrax under MIT license.
 
 Here's a running demo
-http://vectorslave.com/csg/demos/CSGDemo.html
-
+https://manthrax.github.io/THREE-CSGMesh/demos/CSGDemo.html
 [![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/assets/CSGScreenshot.jpg)](#screenshot)
 
 And a shinier, slightly more complex demo:
-http://vectorslave.com/csg/demos/CSGShinyDemo.html
+https://manthrax.github.io/THREE-CSGMesh/demos/CSGShinyDemo.html
 
 [![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/assets/CSGShinyScreenshot.jpg)](#screenshot)
 
 And a more complex example showing a text mesh cut into another complex mesh via an intermediate cube:
-http://vectorslave.com/csg/v2/index.html
 
+https://manthrax.github.io/THREE-CSGMesh/v2/index.html
 [![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/assets/V2TestScreenshot.jpg)](#screenshot)
 
 An example showing multiple material groups, and vertex color channel:
-http://vectorslave.com/csg/demos/CSGStress.html
+
+https://manthrax.github.io/THREE-CSGMesh/demos/CSGStress.html
 
 [![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/assets/CGStressScreenshot.jpg)](#screenshot)
 
