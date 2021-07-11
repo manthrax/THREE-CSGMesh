@@ -72,7 +72,7 @@ let box = new THREE.Mesh(new THREE.BoxGeometry(2,2,2),mkMat('grey'))
 scene.add(box)
 
 let sphere = new THREE.Mesh(new THREE.SphereBufferGeometry(1.2,8,8),mkMat('grey'))
-let cylinder = new THREE.Mesh(new THREE.CylinderBufferGeometry(1.2,0.8,2.2,8,8),mkMat('grey'))
+let cylinder = new THREE.Mesh(new THREE.CylinderBufferGeometry(1.2,0.0,2.2,8,8),mkMat('grey'))
 let tsz = 1.0
 let torusKnot = new THREE.Mesh(new THREE.TorusKnotGeometry(tsz,tsz * 0.33,20,3),mkMat('grey'))
 let subBox = box.clone()
@@ -350,10 +350,10 @@ function animate(time) {
         subMesh.castShadow = box.castShadow = subMesh.receiveShadow = box.receiveShadow = true
     }
 
-    subMesh.position.y = 0.25
-    subMesh.position.x = Math.sin(tm * 0.1) * 2;
-    subMesh.position.z = Math.cos(tm * 0.1) * 0.5;
-    subMesh.position.t = Math.sin(tm * -0.2) * 0.5;
+    subMesh.position.y = 0.25 + Math.sin(tm * 0.42) * 1.5;
+    subMesh.position.x = Math.sin(tm * 0.3) * 2;
+    subMesh.position.z = Math.cos(tm * 0.2) * 0.5;
+    subMesh.position.t = Math.sin(tm * -0.3) * 0.5;
 
     subMesh.rotation.x += subMesh.position.t * 0.02;
     subMesh.rotation.z += subMesh.position.t * 0.021;

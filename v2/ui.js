@@ -81,7 +81,7 @@ function init(app){
 
         if (e.code === 'KeyW') {
             let mats={}
-            scene.traverse((e)=>(e.isMesh)&&(mats[e.material.uuid]=e.material))
+            scene.traverse((e)=>(e.isMesh)&&(e.material.length?e.material:[e.material]).forEach(m=>mats[m.uuid]=m))
             for(let f in mats){
                 let m=mats[f]
                 if (m.userData.saveWireframe === undefined) {

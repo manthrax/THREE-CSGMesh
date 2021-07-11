@@ -1,3 +1,4 @@
+
 import*as THREE from "../lib/three.module.js";
 //import { CSS3DRenderer } from "../../../three.js-dev/examples/jsm/renderers/CSS3DRenderer.js";
 
@@ -37,7 +38,7 @@ class Environment {
             //renderer.toneMapping = THREE.ReinhardToneMapping;
             renderer.toneMapping = THREE.LinearToneMapping;
             //renderer.toneMapping = THREE.CineonToneMapping;
-            renderer.toneMappingExposure = 1;
+            renderer.toneMappingExposure = .8;
             //0.5;//2.3;
 
             var renderScene = new RenderPass(scene,camera);
@@ -97,8 +98,8 @@ class Environment {
             new RGBELoader().setDataType(THREE.UnsignedByteType)//            .setPath( '../three.js-dev/examples/textures/equirectangular/' )
             //            .load( 'royal_esplanade_1k.hdr', 
             .setPath('')
-            //.load( 'venice_sunset_2k.hdr', 
-            .load('../assets/san_giuseppe_bridge_4k.hdr',
+            .load( '../assets/venice_sunset_1k.hdr', 
+            //.load('../assets/san_giuseppe_bridge_4k.hdr',
             function(texture) {
                 var envMap = pmremGenerator.fromEquirectangular(texture).texture;
                 scene.background = envMap;
@@ -145,6 +146,7 @@ class Environment {
             canvas.width = canvas.height = dim;
             return canvas;
         }
+        this.mkCanvas = mkCanvas;
         function makeProceduralTexture(dim, fn) {
             var canv = mkCanvas(dim);
             var ctx = canv.getContext("2d");
@@ -175,7 +177,7 @@ class Environment {
             roughnessMap: tx
         });
 
-        Environment.mkMat = mkMat;
+        this.mkMat = Environment.mkMat = mkMat;
 
         let rnd = rng=>(Math.random() * 2 - 1) * (rng || 1);
 
@@ -194,14 +196,14 @@ class Environment {
             }
         }
         ;
-        setShadowSize(10, 2048);
+        setShadowSize(20, 2048);
         scene.add(light1);
         light1.shadow.bias = -.0001
 
         //light1.shadow.bias=-0.0001
         let ground = new THREE.Mesh(new THREE.BoxGeometry(2000,1,2000),mkMat("grey"));
         scene.add(ground);
-        ground.position.y -= 1.51;
+        ground.position.y -= 2.;
         ground.name = "ground";
         ground.receiveShadow = true;
         ground.material.roughnessMap = ground.material.roughnessMap.clone();

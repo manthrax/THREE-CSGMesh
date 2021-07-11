@@ -441,43 +441,6 @@ ${(performance.now() / 1000) | 0}`)
     }
 }
 
-fetch('../csg-lib.js').then(function(response) {
-    return response.text().then(function(text) {
-        text = text.slice(0, text.lastIndexOf('export'));
-        const code = text + `
-			self.onmessage=(message)=>{
-			let task = JSON.parse(message.data)
-			console.log("Got task:"+task.op+' '+task.taskId)
-			postMessage(JSON.stringify({
-				taskId:task.taskId,
-				result : CSG.fromJSON(task.a)[task.op](CSG.fromJSON(task.b))
-			}))
-		}
-        console.log('CSG worker started!')`
-        const blob = new Blob([code],{
-            type: 'application/javascript'
-        })
-        const worker = new Worker(URL.createObjectURL(blob))
-        let taskId=0;
-        let tasks={}
-        worker.onmessage = function(e) {
-           let rslt = JSON.parse(e.data)
-           tasks[rslt.taskId].resolve(CSG.fromJSON(rslt.result))
-		  console.log('Message received from worker');
-		}
-        CSG.doAsync=(a,op,b)=>{
-        	let task={a,op,b,taskId}
-        	tasks[taskId]=task;
-        	taskId++;
-        	task.result = new Promise((resolve,reject)=>{
-        		task.resolve = resolve;
-                worker.postMessage(JSON.stringify(task))
-        	})
-        	return task.result
-        }
-    });
-});
-
 let defaultScene = `
 [
 {

@@ -1,6 +1,9 @@
 import*as THREE from "../lib/three.module.js";
 import {OrbitControls} from "../lib/jsm/OrbitControls.js";
 import {TransformControls} from "../lib/jsm/TransformControls.js";
+
+//import*as THREE from "https://threejs.org/build/three.module.js";
+
 //import { ConvexHull } from "../three.js-dev/examples/jsm/math/ConvexHull.js";
 import GridMaterial from "./grid-material.js";
 
@@ -17,8 +20,8 @@ class App3 {
         });
         renderer.setClearColor(0x101010);
         renderer.outputEncoding = THREE.sRGBEncoding;
-        renderer.shadowMap.type = THREE.VSMShadowMap;
-        //THREE.PCFSoftShadowMap;
+        //renderer.shadowMap.type = THREE.VSMShadowMap;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.shadowMap.enabled = true;
         document.body.appendChild(renderer.domElement);
 
@@ -27,6 +30,12 @@ class App3 {
         let aspect = window.innerWidth / window.innerHeight;
         camera = this.camera = new THREE.PerspectiveCamera(75,aspect,0.1,1000);
         scene.add(camera);
+
+
+        let environment = this.environment = new Environment(renderer,scene,camera)
+
+        var raycaster = new THREE.Raycaster();
+        var mouse = new THREE.Vector2();
 
         let lastSavedPosition = new THREE.Vector3(2,1.5,2)
 
@@ -40,9 +49,6 @@ class App3 {
             camera.position.copy(lastSavedPosition);
             ocontrols.target.set(0, 0, 0)
         }
-
-        let environment = this.environment = new Environment(renderer,scene,camera)
-
         let frontMaterial = Environment.mkMat('yellow')
         frontMaterial.transparent = true;
         frontMaterial.opacity = .25;
@@ -57,9 +63,6 @@ class App3 {
         let grid = GridMaterial.makeGrid(gridmat)
         scene.add(grid);
 */
-
-        var raycaster = new THREE.Raycaster();
-        var mouse = new THREE.Vector2();
 
         let selectionMaterial = Environment.mkMat(0x404040);
         //grid.material.clone();

@@ -15,9 +15,7 @@ class CSG {
     }
     clone() {
         let csg = new CSG();
-        csg.polygons = this.polygons.map(function(p) {
-            return p.clone();
-        });
+        csg.polygons = this.polygons.map(p=>p.clone())
         return csg;
     }
 
@@ -183,8 +181,7 @@ class Vertex {
     constructor(pos, normal, uv, color) {
         this.pos = new Vector().copy(pos);
         this.normal = new Vector().copy(normal);
-        this.uv = new Vector().copy(uv);
-        this.uv.z=0;
+        uv && (this.uv = new Vector().copy(uv)) && (this.uv.z=0);
         color && (this.color = new Vector().copy(color));
     }
 
@@ -202,7 +199,7 @@ class Vertex {
     // interpolating all properties using a parameter of `t`. Subclasses should
     // override this to interpolate additional properties.
     interpolate(other, t) {
-        return new Vertex(this.pos.clone().lerp(other.pos, t),this.normal.clone().lerp(other.normal, t),this.uv.clone().lerp(other.uv, t), this.color&&other.color&&this.color.clone().lerp(other.color,t))
+        return new Vertex(this.pos.clone().lerp(other.pos, t),this.normal.clone().lerp(other.normal, t),this.uv&&other.uv&&this.uv.clone().lerp(other.uv, t), this.color&&other.color&&this.color.clone().lerp(other.color,t))
     }
 }
 ;
@@ -319,7 +316,7 @@ class Polygon {
         return new Polygon(this.vertices.map(v=>v.clone()),this.shared);
     }
     flip() {
-        this.vertices.reverse().map(v=>v.flip())
+        this.vertices.reverse().forEach(v=>v.flip())
         this.plane.flip();
     }
 }
@@ -377,8 +374,9 @@ class Node {
             front = this.front.clipPolygons(front);
         if (this.back)
             back = this.back.clipPolygons(back);
-        else
+        else 
             back = [];
+            //return front;
         return front.concat(back);
     }
 
@@ -429,7 +427,7 @@ class Node {
     }
 }
 
-
+// Inflate/deserialize a vanilla struct into a CSG structure webworker.
 CSG.fromJSON=function(json){
     return CSG.fromPolygons(json.polygons.map(p=>new Polygon(p.vertices.map(v=> new Vertex(v.pos,v.normal,v.uv)),p.shared)))
 }

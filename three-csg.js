@@ -1,16 +1,14 @@
 "use strict"
 
-import*as THREE from "./lib/three.module.js";
+//import*as THREE from "./lib/three.module.js";
+
+import*as THREE from "https://threejs.org/build/three.module.js";
+
 let { BufferGeometry, Vector3, Vector2} = THREE;
-
-
 import {CSG, Vertex, Vector, Polygon} from "./csg-lib.js"
-
 //import {Geometry} from "../three.js-dev/examples/jsm/deprecated/Geometry.js";
 
 CSG.fromGeometry = function(geom,objectIndex) {
-    //   if (geom.isBufferGeometry)
-    //        geom = new Geometry().fromBufferGeometry(geom)
     let polys = []
     if (geom.isGeometry) {
         let fs = geom.faces;
@@ -106,12 +104,11 @@ let nbuf2=(ct)=>{
     }
 }
 
-CSG.toMesh = function(csg, toMatrix, toMaterial) {
-
+CSG.toGeometry = function(csg, buffered=true) {
     let ps = csg.polygons;
     let geom;
     let g2;
-    if(0) //Old geometry path...
+    if(!buffered) //Old geometry path...
     {
         geom = new Geometry();
         let vs = geom.vertices;
@@ -147,8 +144,7 @@ CSG.toMesh = function(csg, toMatrix, toMaterial) {
         }
         geom = new THREE.BufferGeometry().fromGeometry(geom)
         geom.verticesNeedUpdate = geom.elementsNeedUpdate = geom.normalsNeedUpdate = true;
-    }
-    if(1) { //BufferGeometry path
+    }else { //BufferGeometry path
         let triCount = 0;
         ps.forEach(p=>triCount += (p.vertices.length - 2))
          geom = new THREE.BufferGeometry()
@@ -198,7 +194,11 @@ CSG.toMesh = function(csg, toMatrix, toMaterial) {
         }
         g2 = geom;
     }
+    return geom;
+}
 
+CSG.toMesh = function(csg, toMatrix, toMaterial) {
+    let geom = CSG.toGeometry(csg);
     let inv = new THREE.Matrix4().copy(toMatrix).invert();
     geom.applyMatrix4(inv);
     geom.computeBoundingSphere();
@@ -211,5 +211,7 @@ CSG.toMesh = function(csg, toMatrix, toMaterial) {
     m.castShadow = m.receiveShadow = true;
     return m
 }
+
+import "./csg-worker.js"
 
 export default CSG
