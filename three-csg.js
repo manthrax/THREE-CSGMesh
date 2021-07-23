@@ -50,8 +50,8 @@ CSG.fromGeometry = function(geom,objectIndex) {
                 let nx = normalattr.array[vp]
                 let ny = normalattr.array[vp + 1]
                 let nz = normalattr.array[vp + 2]
-                let u = uvattr.array[vt]
-                let v = uvattr.array[vt + 1]
+                //let u = uvattr.array[vt]
+                //let v = uvattr.array[vt + 1]
                 vertices[j] = new Vertex({
                     x,
                     y,
@@ -60,9 +60,9 @@ CSG.fromGeometry = function(geom,objectIndex) {
                     x: nx,
                     y: ny,
                     z: nz
-                },{
-                    x: u,
-                    y: v,
+                },uvattr&&{
+                    x: uvattr.array[vt],
+                    y: uvattr.array[vt+1],
                     z: 0
                 },colorattr&&{x:colorattr.array[vt],y:colorattr.array[vt+1],z:colorattr.array[vt+2]});
             }
@@ -171,16 +171,14 @@ CSG.toGeometry = function(csg, buffered=true) {
                 normals.write(pvs[0].normal)
                 normals.write(pvs[j-2].normal)
                 normals.write(pvs[j-1].normal)
-                uvs.write(pvs[0].uv)
-                uvs.write(pvs[j-2].uv)
-                uvs.write(pvs[j-1].uv)
+                uvs&&(uvs.write(pvs[0].uv))||(uvs.write(pvs[j-2].uv))||(uvs.write(pvs[j-1].uv))
                 colors&&(colors.write(pvs[0].color)||colors.write(pvs[j-2].color)||colors.write(pvs[j-1].color))
             }
         }
         )
         geom.setAttribute('position', new THREE.BufferAttribute(vertices.array,3));
         geom.setAttribute('normal', new THREE.BufferAttribute(normals.array,3));
-        geom.setAttribute('uv', new THREE.BufferAttribute(uvs.array,2));
+        uvs && geom.setAttribute('uv', new THREE.BufferAttribute(uvs.array,2));
         colors && geom.setAttribute('color', new THREE.BufferAttribute(colors.array,3));
         if(grps.length){
             let index = []
