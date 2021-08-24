@@ -151,7 +151,7 @@ CSG.toGeometry = function(csg, buffered=true) {
 
         let vertices = nbuf3(triCount * 3 * 3)
         let normals = nbuf3(triCount * 3 * 3)
-        let uvs = nbuf2(triCount * 2 * 3)
+        let uvs; // = nbuf2(triCount * 2 * 3)
         let colors;
         let grps=[]
         ps.forEach(p=>{
@@ -160,8 +160,13 @@ CSG.toGeometry = function(csg, buffered=true) {
             if(p.shared!==undefined){
                 if(!grps[p.shared])grps[p.shared]=[]
             }
-            if(pvlen&&pvs[0].color!==undefined){
-                if(!colors)colors = nbuf3(triCount*3*3);
+            if(pvlen){
+                if(pvs[0].color!==undefined){
+                    if(!colors)colors = nbuf3(triCount*3*3);
+                }
+                if(pvs[0].uv!==undefined){
+                    if(!uvs)uvs = nbuf2(triCount * 2 * 3)
+                }
             }
             for (let j = 3; j <= pvlen; j++) {
                 (p.shared!==undefined) && (grps[p.shared].push(vertices.top/3,(vertices.top/3)+1,(vertices.top/3)+2));
