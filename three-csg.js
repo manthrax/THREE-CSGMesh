@@ -175,8 +175,8 @@ CSG.toGeometry = function(csg, buffered=true) {
                 vertices.write(pvs[j-1].pos)
                 normals.write(pvs[0].normal)
                 normals.write(pvs[j-2].normal)
-                normals.write(pvs[j-1].normal)
-                uvs&&(uvs.write(pvs[0].uv)||uvs.write(pvs[j-2].uv)||uvs.write(pvs[j-1].uv)
+                normals.write(pvs[j-1].normal);
+                uvs&&(uvs.write(pvs[0].uv)||uvs.write(pvs[j-2].uv)||uvs.write(pvs[j-1].uv);
                 colors&&(colors.write(pvs[0].color)||colors.write(pvs[j-2].color)||colors.write(pvs[j-1].color))
             }
         }
