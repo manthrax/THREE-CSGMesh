@@ -49,14 +49,14 @@ Example usage:
 
 
 # EXAMPLE 0:
-```
+```js
 //Minimal example.. subtract mesh b from mesh a:
 import {CSG} from "three-csg.js"
 scene.add(CSG.toMesh(CSG.subtract(CSG.fromMesh(a),CSG.fromMesh(b)),a.material))
 ```
 
 # EXAMPLE 1. Verbose... step by step..
-```
+```js
 
 // Make 2 box meshes.. 
 
@@ -86,6 +86,3 @@ let bspResult = bspA.subtract(bspB)
 let meshResult = CSG.toMesh( bspResult, meshA.matrix, meshA.material )
 
 ```
-
-
-
