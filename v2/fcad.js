@@ -1,7 +1,7 @@
-import*as THREE from "../lib/three.module.js";
+import*as THREE from "three";
 import CSG from "../three-csg.js";
-import {GLTFLoader} from "../lib/jsm/GLTFLoader.js"
-import {DRACOLoader} from "../lib/jsm/DRACOLoader.js"
+import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader"
+import {DRACOLoader} from "three/examples/jsm/loaders/DRACOLoader"
 
 let glbLoader = new GLTFLoader()
 const dracoLoader = new DRACOLoader();
@@ -28,7 +28,7 @@ let backMaterial = new THREE.MeshStandardMaterial({
     side: THREE.BackSide,
     depthWrite: false
 });
-import {BufferGeometry, Float32BufferAttribute, Geometry} from '../lib/three.module.js';
+
 
 class FNode {
 

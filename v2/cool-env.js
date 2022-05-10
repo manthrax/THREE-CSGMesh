@@ -1,9 +1,10 @@
 
-import*as THREE from "../lib/three.module.js";
+import*as THREE from "../node_modules/three/build/three.module.js";
 //import { CSS3DRenderer } from "../../../three.js-dev/examples/jsm/renderers/CSS3DRenderer.js";
 
-import {HDRCubeTextureLoader} from "../lib/jsm/HDRCubeTextureLoader.js";
-import {RGBELoader} from "../lib/jsm/RGBELoader.js";
+import {HDRCubeTextureLoader} from '../node_modules/three/examples/jsm/loaders/HDRCubeTextureLoader.js';
+import {RGBELoader} from '../node_modules/three/examples/jsm/loaders/RGBELoader.js';
+
 import {RoughnessMipmapper} from '../lib/jsm/RoughnessMipmapper.js';
 //import {PMREMGenerator} from "../three.js-dev/examples/jsm/pmrem/PMREMGenerator.js";
 //import {PMREMCubeUVPacker} from "../three.js-dev/examples/jsm/pmrem/PMREMCubeUVPacker.js";
@@ -11,15 +12,14 @@ import {RoughnessMipmapper} from '../lib/jsm/RoughnessMipmapper.js';
 import {EffectComposer} from "../lib/jsm/postprocessing/EffectComposer.js";
 import {RenderPass} from "../lib/jsm/postprocessing/RenderPass.js";
 import {ShaderPass} from "../lib/jsm/postprocessing/ShaderPass.js";
-import {CopyShader} from "../lib/jsm/shaders/CopyShader.js";
-import {LuminosityHighPassShader} from "../lib/jsm/shaders/LuminosityHighPassShader.js";
+
 import {UnrealBloomPass} from "../lib/jsm/postprocessing/UnrealBloomPass.js";
 import {FXAAShader} from "../lib/jsm/shaders/FXAAShader.js";
 
-import {SSAOShader} from "../lib/jsm/shaders/SSAOShader.js";
+
 import {SSAOPass} from "../lib/jsm/postprocessing/SSAOPass.js";
 
-import {SimplexNoise} from "../lib/jsm/SimplexNoise.js";
+
 
 class Environment {
     constructor(renderer, scene, camera) {
@@ -90,15 +90,17 @@ class Environment {
         let composer = this.composer = setupPostProcessing();
 
         // use of RoughnessMipmapper is optional
-        var roughnessMipmapper = new RoughnessMipmapper(renderer);
+//        var roughnessMipmapper = new RoughnessMipmapper(renderer);
 
         function loadHDREquirect(path) {
             var pmremGenerator = new THREE.PMREMGenerator(renderer);
+            
             pmremGenerator.compileEquirectangularShader();
-            new RGBELoader().setDataType(THREE.UnsignedByteType)//            .setPath( '../three.js-dev/examples/textures/equirectangular/' )
+            //new RGBELoader().setDataType(THREE.UnsignedByteType)//            .setPath( '../three.js-dev/examples/textures/equirectangular/' )
             //            .load( 'royal_esplanade_1k.hdr', 
-            .setPath('')
-            .load( '../assets/venice_sunset_1k.hdr', 
+            new RGBELoader()
+            .setPath('../assets/')
+            .load( 'venice_sunset_1k.hdr', 
             //.load('../assets/san_giuseppe_bridge_4k.hdr',
             function(texture) {
                 var envMap = pmremGenerator.fromEquirectangular(texture).texture;

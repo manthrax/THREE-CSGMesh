@@ -1,5 +1,5 @@
-import*as THREE from "../lib/three.module.js"
-import {OrbitControls} from "../lib/jsm/OrbitControls.js"
+import*as THREE from "three"
+import { OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import reindexBufferGeometry from "./BufferGeometryIndexer.js"
 import CSG from "../three-csg.js"
 

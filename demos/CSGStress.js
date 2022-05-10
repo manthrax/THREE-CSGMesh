@@ -1,12 +1,12 @@
-import*as THREE from '../lib/three.module.js';
-import {OrbitControls} from '../lib/jsm/OrbitControls.js';
+import*as THREE from 'three';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {TeapotBufferGeometry} from '../lib/jsm/TeapotBufferGeometry.js';
-import {TorusBufferGeometry} from '../lib/jsm/TorusGeometry.js';
+
 import CSG from "../three-csg.js"
 import UI from "../v2/ui.js"
 
-import {GLTFLoader} from "../lib/jsm/GLTFLoader.js"
-import {DRACOLoader} from "../lib/jsm/DRACOLoader.js"
+import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader"
+import {DRACOLoader} from "three/examples/jsm/loaders/DRACOLoader"
 let glbLoader = new GLTFLoader()
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath('../lib/draco/');

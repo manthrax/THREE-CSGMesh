@@ -1,6 +1,6 @@
-import*as THREE from "../lib/three.module.js";
-import {OrbitControls} from "../lib/jsm/OrbitControls.js";
-import {TransformControls} from "../lib/jsm/TransformControls.js";
+import * as THREE from "three";
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";
+import {TransformControls} from "three/examples/jsm/controls/TransformControls.js";
 
 //import*as THREE from "https://threejs.org/build/three.module.js";
 

@@ -1,4 +1,4 @@
-import * as THREE from '../lib/three.module.js';
+import * as THREE from 'three';
 import {SimplifyModifier} from '../lib/jsm/SimplifyModifier.js';
 //import CanvasRecorder from "./canvas-recorder.js"
 import UI from "./ui.js"

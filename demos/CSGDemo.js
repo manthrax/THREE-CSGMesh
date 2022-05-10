@@ -1,8 +1,8 @@
 
-import * as THREE from '../lib/three.module.js';
-import {OrbitControls} from '../lib/jsm/OrbitControls.js';
+import * as THREE from 'three';
+
 import CSG from "../three-csg.js"
-import Environment from "../v2/cool-env.js"
+
 //import "../v2/csg-toy.js"
 import UI from "../v2/ui.js"
 import app from "../v2/app3.js"
