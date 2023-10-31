@@ -200,7 +200,7 @@ CSG.toGeometry = function(csg, buffered=true) {
     return geom;
 }
 
-CSG.toMesh = function(csg, toMatrix, toMaterial) {
+CSG.toMesh = function(csg, toMatrix=new THREE.Matrix4(), toMaterial) {
     let geom = CSG.toGeometry(csg);
     let inv = new THREE.Matrix4().copy(toMatrix).invert();
     geom.applyMatrix4(inv);
