@@ -334,6 +334,19 @@ function checkForResize() {
     }
 }
 
+let showWire = false;
+let paused = false;
+
+document.addEventListener('keydown',(e)=>{
+    if(e.code=='KeyW'){
+        showWire=!!showWire;
+        scene.traverse(e=>e.isMesh && (e.material.wireframe = showWire));
+    }
+    if(e.code=='Space'){
+        paused = !paused;
+    }
+})
+
 let meshIdx = -1;
 let subMesh;
 function animate(time) {
@@ -349,7 +362,12 @@ function animate(time) {
         scene.add(subMesh)
         subMesh.castShadow = box.castShadow = subMesh.receiveShadow = box.receiveShadow = true
     }
-
+    if (env.composer)
+        env.composer.render();
+    else
+        renderer.render(scene, camera)
+    if(paused)
+        return;
     subMesh.position.y = 0.25 + Math.sin(tm * 0.42) * 1.5;
     subMesh.position.x = Math.sin(tm * 0.3) * 2;
     subMesh.position.z = Math.cos(tm * 0.2) * 0.5;
@@ -361,11 +379,6 @@ function animate(time) {
     light2.position.x = Math.sin(tm * 0.31) * 5;
     light2.position.z = Math.cos(tm * 0.53) * 7;
     light2.position.y = (Math.cos(tm * 0.42) * 4) + 6;
-
-    if (env.composer)
-        env.composer.render();
-    else
-        renderer.render(scene, camera)
 
     recompute();
 }
