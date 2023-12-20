@@ -72,7 +72,7 @@ function doCSG(a, b, op, mat, mat1=mat) {
     return result;
 }
 
-new THREE.TextureLoader().load('./door.jpg',(tex)=>{
+new THREE.TextureLoader().load('../assets/door.jpg',(tex)=>{
     let box = new THREE.Mesh(new THREE.BoxGeometry(),new THREE.MeshStandardMaterial({map:tex}));
     let cutout = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1, 0.1),new THREE.MeshStandardMaterial({color:'#232323'}));
     cutout.position.set(0.45, 0, 0);

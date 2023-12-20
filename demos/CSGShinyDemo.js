@@ -1,6 +1,6 @@
 import*as THREE from "three"
 import {OrbitControls} from "three/addons/controls/OrbitControls.js"
-import reindexBufferGeometry from "./BufferGeometryIndexer.js"
+import reindexBufferGeometry from "../v2/BufferGeometryIndexer.js"
 import CSG from "../three-csg.js"
 
 let renderer = new THREE.WebGLRenderer({
