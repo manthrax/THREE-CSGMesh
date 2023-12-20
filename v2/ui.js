@@ -93,8 +93,48 @@ function init(app){
                 }
             }
         }
+        if (e.code === 'KeyE') {
+            exportGLB(scene)
+        }
     }
     , false);
 }
 
+import {GLTFExporter} from "three/addons/exporters/GLTFExporter.js" 
+
+function exportGLB(scene){
+    //EXPORT GLB
+  function download() {
+    const exporter = new GLTFExporter();
+    exporter.parse(
+      scene,
+      function (result) {
+        saveArrayBuffer(result, "szene.glb");
+      },
+      //called
+      function (error) {
+        console.error("Error exporting GLTF:", error);
+        alert("An error occurred during export. See console for details.");
+      },
+      { binary: true, onlyVisible: true }
+    );
+  }
+  function exportOBJ() {
+    const exporter = new OBJExporter();
+    const result = exporter.parse(scene);
+    saveArrayBuffer(result, "szene.obj");
+  }
+  function saveArrayBuffer(buffer, filename) {
+    save(new Blob([buffer], { type: "application/octet-stream" }), filename);
+  }
+  const link = document.createElement("a");
+  link.style.display = "none";
+  document.body.appendChild(link); // Firefox workaround, see #6594
+  function save(blob, filename) {
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+  }
+    download()
+}
 export default init;

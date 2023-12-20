@@ -1,4 +1,4 @@
-import * as THREE from "../lib/three.module.js"
+import * as THREE from "three"
 
 function reindexBufferGeometry(bufferGeometry,options){
     let nonIndexed = bufferGeometry.index ? bufferGeometry.toNonIndexed() : bufferGeometry   
@@ -50,12 +50,12 @@ function reindexBufferGeometry(bufferGeometry,options){
     }
 }
 
-
+/* test
 (function(){
-    let bgeom = new THREE.SphereBufferGeometry(1,32,32)
     let geom = new THREE.SphereGeometry(1,32,32)
-    let mesh = new THREE.Mesh(new THREE.BufferGeometry().fromGeometry(geom))
+    let mesh = new THREE.Mesh(geom)
     reindexBufferGeometry( mesh.geometry )
 })()
+*/
 
 export default reindexBufferGeometry
