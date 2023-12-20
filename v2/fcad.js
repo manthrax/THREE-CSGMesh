@@ -1,8 +1,9 @@
-import*as THREE from "../lib/three.module.js";
+import*as THREE from "three";
 import CSG from "../three-csg.js";
-import {GLTFLoader} from "../lib/jsm/GLTFLoader.js"
-import {DRACOLoader} from "../lib/jsm/DRACOLoader.js"
-
+import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js"
+import {DRACOLoader} from "three/addons/loaders/DRACOLoader.js"
+import {TextGeometry} from "three/addons/geometries/TextGeometry.js"
+import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 let glbLoader = new GLTFLoader()
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath('js/lib/draco/');
@@ -28,7 +29,7 @@ let backMaterial = new THREE.MeshStandardMaterial({
     side: THREE.BackSide,
     depthWrite: false
 });
-import {BufferGeometry, Float32BufferAttribute, Geometry} from '../lib/three.module.js';
+import {BufferGeometry, Float32BufferAttribute} from 'three';
 
 class FNode {
 
@@ -284,10 +285,10 @@ class FCAD {
         this.update();
         localStorage.csgscene = JSON.stringify(this.toJSON());
 
-        const loader = new THREE.FontLoader();
-        loader.load('../lib/helvetiker_regular.typeface.json', function(font) {
+        const loader = new FontLoader();
+        loader.load('../helvetiker_regular.typeface.json', function(font) {
             let genText = (str)=>{
-                const geometry = new THREE.TextBufferGeometry(str,{
+                const geometry = new TextGeometry(str,{
                     font: font,
                     size: .15,
                     height: .05,
@@ -359,7 +360,7 @@ class FCAD {
                             box.setFromObject(textMesh);
                             box.expandByScalar(.01)
                             let sz = box.getSize(new THREE.Vector3())
-                            bx = new THREE.Mesh(new THREE.BoxBufferGeometry(sz.x,sz.y,sz.z),mm);
+                            bx = new THREE.Mesh(new THREE.BoxGeometry(sz.x,sz.y,sz.z),mm);
                             box.getCenter(bx.position);
                             bx.updateMatrixWorld()
                             bx.material = bx.material.clone()

@@ -1,6 +1,6 @@
-import*as THREE from "../lib/three.module.js";
-import {OrbitControls} from "../lib/jsm/OrbitControls.js";
-import {TransformControls} from "../lib/jsm/TransformControls.js";
+import*as THREE from "three";
+import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+import {TransformControls} from "three/addons/controls/TransformControls.js";
 
 //import*as THREE from "https://threejs.org/build/three.module.js";
 
@@ -19,7 +19,8 @@ class App3 {
             alpha: true
         });
         renderer.setClearColor(0x101010);
-        renderer.outputEncoding = THREE.sRGBEncoding;
+        //renderer.outputEncoding = THREE.sRGBEncoding;
+        //renderer.outputColorSpace = 'srgb-linear';
         //renderer.shadowMap.type = THREE.VSMShadowMap;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.shadowMap.enabled = true;
@@ -195,7 +196,7 @@ class App3 {
             buttons: 0
         }
 
-        let groundProxy = new THREE.Mesh(new THREE.PlaneBufferGeometry(1000,1000))
+        let groundProxy = new THREE.Mesh(new THREE.PlaneGeometry(1000,1000))
         groundProxy.rotation.x = Math.PI * -.5
         groundProxy.updateMatrixWorld()
 

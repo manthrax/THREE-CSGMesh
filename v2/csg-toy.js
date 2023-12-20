@@ -1,5 +1,5 @@
-import * as THREE from '../lib/three.module.js';
-import {SimplifyModifier} from '../lib/jsm/SimplifyModifier.js';
+import * as THREE from 'three';
+import {SimplifyModifier} from 'three/addons/modifiers/SimplifyModifier.js';
 //import CanvasRecorder from "./canvas-recorder.js"
 import UI from "./ui.js"
 import CSG from "../three-csg.js";
