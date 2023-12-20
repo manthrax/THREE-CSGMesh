@@ -286,7 +286,7 @@ class FCAD {
         localStorage.csgscene = JSON.stringify(this.toJSON());
 
         const loader = new FontLoader();
-        loader.load('../helvetiker_regular.typeface.json', function(font) {
+        loader.load('../assets/helvetiker_regular.typeface.json', function(font) {
             let genText = (str)=>{
                 const geometry = new TextGeometry(str,{
                     font: font,
