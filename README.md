@@ -23,7 +23,7 @@ https://manthrax.github.io/THREE-CSGMesh/v2/index.html
 
 An example showing multiple material groups, and vertex color channel:
 
-https://manthrax.github.io/THREE-CSGMesh/demos/CSGStress.html
+https://manthrax.github.io/THREE-CSGMesh/demos/CSGMulti.html
 
 [![csg screenshot](https://raw.githubusercontent.com/manthrax/THREE-CSGMesh/master/assets/CGStressScreenshot.jpg)](#screenshot)
 
