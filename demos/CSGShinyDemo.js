@@ -1,5 +1,5 @@
-import*as THREE from "../lib/three.module.js"
-import {OrbitControls} from "../lib/jsm/OrbitControls.js"
+import*as THREE from "three"
+import {OrbitControls} from "three/addons/controls/OrbitControls.js"
 import reindexBufferGeometry from "./BufferGeometryIndexer.js"
 import CSG from "../three-csg.js"
 
@@ -71,8 +71,8 @@ ground.receiveShadow = true;
 let box = new THREE.Mesh(new THREE.BoxGeometry(2,2,2),mkMat('grey'))
 scene.add(box)
 
-let sphere = new THREE.Mesh(new THREE.SphereBufferGeometry(1.2,8,8),mkMat('grey'))
-let cylinder = new THREE.Mesh(new THREE.CylinderBufferGeometry(1.2,0.0,2.2,8,8),mkMat('grey'))
+let sphere = new THREE.Mesh(new THREE.SphereGeometry(1.2,8,8),mkMat('grey'))
+let cylinder = new THREE.Mesh(new THREE.CylinderGeometry(1.2,0.0,2.2,8,8),mkMat('grey'))
 let tsz = 1.0
 let torusKnot = new THREE.Mesh(new THREE.TorusKnotGeometry(tsz,tsz * 0.33,20,3),mkMat('grey'))
 let subBox = box.clone()
@@ -337,15 +337,16 @@ function checkForResize() {
 let showWire = false;
 let paused = false;
 
-document.addEventListener('keydown',(e)=>{
-    if(e.code=='KeyW'){
-        showWire=!!showWire;
+document.addEventListener('keydown', (e)=>{
+    if (e.code == 'KeyW') {
+        showWire = !!showWire;
         scene.traverse(e=>e.isMesh && (e.material.wireframe = showWire));
     }
-    if(e.code=='Space'){
+    if (e.code == 'Space') {
         paused = !paused;
     }
-})
+}
+)
 
 let meshIdx = -1;
 let subMesh;
@@ -366,7 +367,7 @@ function animate(time) {
         env.composer.render();
     else
         renderer.render(scene, camera)
-    if(paused)
+    if (paused)
         return;
     subMesh.position.y = 0.25 + Math.sin(tm * 0.42) * 1.5;
     subMesh.position.x = Math.sin(tm * 0.3) * 2;

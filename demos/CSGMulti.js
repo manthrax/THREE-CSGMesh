@@ -1,7 +1,6 @@
 import*as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
-import {TeapotGeometry} from 'three/addons/geometries/TeapotGeometry.js';
-//import {TorusGeometry} from 'three/addons/geometries/TorusGeometry.js';
+
 import CSG from "../three-csg.js"
 import UI from "../v2/ui.js"
 
@@ -31,12 +30,33 @@ UI({
 
 let {abs, sin, cos, min, max, random} = Math;
 
-import Environment from '../v2/cool-env.js';
-
-let environment = new Environment(renderer,scene,camera)
-let mkMat = environment.mkMat;
-
-let tx = environment.makeProceduralTexture(256, (u,v)=>{
+let mkMat = (color='white')=>new THREE.MeshStandardMaterial({
+    color: color,
+    roughness: 0.51,
+    metalness: 0.7,
+    roughnessMap: tx,
+    vertexColors:true
+});
+function mkCanvas(dim) {
+    var canvas = document.createElement("canvas");
+    canvas.width = canvas.height = dim;
+    return canvas;
+}
+function makeProceduralTexture(dim, fn) {
+    var canv = mkCanvas(dim);
+    var ctx = canv.getContext("2d");
+    var pix = ctx.getImageData(0, 0, dim, dim);
+    var u32view = new DataView(pix.data.buffer);
+    var idx = -4;
+    for (var j = 0; j < dim; j++)
+        for (var i = 0; i < dim; i++)
+            u32view.setUint32((idx += 4), fn(j / dim, i / dim) | 0);
+    ctx.putImageData(pix, 0, 0);
+    var tex = new THREE.Texture(canv);
+    tex.needsUpdate = true;
+    return tex;
+}
+let tx = makeProceduralTexture(256, (u,v)=>{
     let rb = ((Math.random() * 128) | 0) * (((((u * 2) & 1) ^ ((v * 2) & 1)) | 0) ? 1 : 2)
     return (rb * 256) | (rb * 256 * 256) | (rb * 256 * 256 * 256) | 0x000000ff
 }
@@ -44,7 +64,7 @@ let tx = environment.makeProceduralTexture(256, (u,v)=>{
 tx.repeat.set(2, 2);
 tx.wrapS = tx.wrapT = THREE.RepeatWrapping
 
-let tx1 = environment.makeProceduralTexture(256, (u,v)=>{
+let tx1 = makeProceduralTexture(256, (u,v)=>{
     let rb = ((Math.random() * 128) | 0) * (((((u * 2) & 1) ^ ((v * 2) & 1)) | 0) ? 1 : 2)
     let r = (abs(sin(v * 3)) * 256) | 0
     let g = (abs(cos(u * 4)) * 256) | 0
@@ -55,13 +75,9 @@ let tx1 = environment.makeProceduralTexture(256, (u,v)=>{
 
 let sphereGeom = new THREE.SphereGeometry(1.2,8,8)
 
-let box = new THREE.Mesh(new THREE.BoxGeometry(2,2,2),mkMat('grey'))
-let sphere = new THREE.Mesh(new THREE.SphereGeometry(1.2,8,8),mkMat('grey'))
+let box = new THREE.Mesh(new THREE.BoxGeometry(2,2,2),mkMat('blue'))
+let sphere = new THREE.Mesh(new THREE.SphereGeometry(1.2,8,8),mkMat('red'))
 
-let teapotGeom = new TeapotGeometry(1.2,1)
-
-//box = new THREE.Mesh(teapotGeom,mkMat('grey'))
-//sphere = new THREE.Mesh(teapotGeom,mkMat('grey'))
 
 scene.add(box)
 scene.add(sphere)
@@ -85,69 +101,9 @@ function doCSG(a, b, op, mat, mat1=mat) {
     let result = CSG.toMesh(bspC, a.matrix);
     result.material = [mat, mat1];
     result.castShadow = result.receiveShadow = true;
+    scene.add(result)
     return result;
 }
-
-let test = ()=>{
-    let sphere1 = new THREE.Mesh(new THREE.TorusGeometry(4,1.48,16,32),sphere.material)
-    sphere1.geometry.rotateX(Math.PI * .5)
-    //scene.add(sphere1);
-    let slicer = new THREE.Mesh(new THREE.PlaneGeometry(11,11,2,1),sphere.material)
-    //scene.add(slicer);
-    let res;
-    let bspA = CSG.fromMesh(sphere1, 0);
-    sphere1.visible = false;
-
-let genFrame=(time)=>{
-
-        let s = sin(time)
-        let c = cos(time)
-        let pts = slicer.geometry.attributes.position.array
-        pts[0] = pts[9] = s * -10
-        pts[2] = pts[11] = c * -10
-
-        s = sin(-time)
-        c = cos(-time)
-        pts[6] = pts[15] = s * 10
-        pts[8] = pts[17] = c * 10
-        slicer.geometry.attributes.position.needsUpdate = true;
-        //    0,9,6,15
-
-        //    1,4,7 ,10, 13, 16, 
-        //    slicer.rotation.y += 0.01;
-        sphere1.updateMatrix();
-        slicer.updateMatrix();
-        slicer.updateMatrixWorld();
-
-        let bspB = CSG.fromMesh(slicer, 1);
-
-        let bspC = bspA.subtract(bspB);
-        let res = CSG.toMesh(bspC, sphere1.matrix);
-        res.material = [sphere1.material, sphere1.material];
-        res.castShadow = res.receiveShadow = true;
-
-        //res = doCSG(sphere1, slicer, 'subtract', sphere1.material, sphere1.material)
-return res;
-}
-let frames=[]
-for(let i=0;i<Math.PI*2;i+=.05){
-    frames.push(genFrame(i))
-}
-
-let loop=0;
-    scene.onBeforeRender = function() {
-        let time = (performance.now() / 1000)
-        if (res) {
-           //res.geometry.dispose()
-            res.parent.remove(res)
-        }
-        res=frames[loop%frames.length]
-        loop++;
-        scene.add(res)
-    }
-}
-
-test()
 
 let difMaterial = mkMat('grey', tx1)
 let subMaterial = mkMat('red')
@@ -162,10 +118,17 @@ function recompute() {
     box.updateMatrix();
     sphere.updateMatrix();
 
-    //  results.push(doCSG(box,sphere,'subtract',subMaterial,difMaterial))
-    //  results.push(doCSG(box,sphere,'intersect',intersectMaterial,difMaterial))
-    //  results.push(doCSG(box,sphere,'union',unionMaterial,difMaterial))
-    if (!workerBusy) {
+            for (let i = 0; i < results.length; i++) {
+                let m = results[i]
+                m.parent.remove(m)
+                m.geometry.dispose();
+            }
+            results = [];
+
+      results.push(doCSG(box,sphere,'subtract',subMaterial,difMaterial))
+      results.push(doCSG(box,sphere,'intersect',intersectMaterial,difMaterial))
+      results.push(doCSG(box,sphere,'union',unionMaterial,difMaterial))
+    if(0)if (!workerBusy) {
         //  workerBusy=true
 
         return CSG.doAsync(CSG.fromMesh(sphere, 0), 'subtract', CSG.fromMesh(box, 1)).then(bspC=>{
@@ -189,7 +152,7 @@ function recompute() {
         //    results.push(doCSG(sphere,box,'subtract',difMaterial,subMaterial))
 
     }
-    return
+    //return
     //   results.push(doCSG(sphere,box,'intersect',difMaterial,intersectMaterial))
     //  results.push(doCSG(sphere,box,'union',difMaterial,unionMaterial))
 
@@ -197,10 +160,17 @@ function recompute() {
         let r = results[i];
         scene.add(r)
 
-        r.position.z += -5 + ((i % 3) * 5)
-        r.position.x += -5 + (((i / 3) | 0) * 10)
+        r.position.z = -5 + ((i % 3) * 5)
+        r.position.x = -5 + (((i / 3) | 0) * 10)
     }
 }
+
+let light = new THREE.DirectionalLight();
+light.position.set(100, 100, 100)
+scene.add(light)
+let ambi = new THREE.AmbientLight();
+scene.add(ambi)
+
 
 function animate(time) {
     if ((domElement.prevWidth != container.clientWidth) || (domElement.prevHeight != container.clientHeight)) {
@@ -213,35 +183,30 @@ function animate(time) {
     //   sphere.position.x=Math.sin(time*0.001)*2;
     box.position.z = Math.cos(time * 0.0011) * 3.5;
     //box.rotation.x+=0.1
-    box.rotation.z += 0.1
+    box.rotation.z += 0.01
     //box.rotation.y+=0.1
     //   sphere.position.t=Math.sin(time*-0.0012)*0.5;
     //    renderer.render(scene,camera)
-    environment.composer.render()
-    //   recompute();
+
+    renderer.render(scene, camera);
+    //environment.composer.render()
+   recompute();
 }
 
 let enableShadows = (root)=>root.traverse(e=>e.isMesh && (e.receiveShadow = e.castShadow = true))
 
-if (0)
-    glbLoader.load("../assets/Pomu4.glb", (glb)=>{
-        enableShadows(glb.scene)
-        let m = glb.scene.getObjectByName('Pomu4')
-        m.position.y += 3
-        m.onBeforeRender = function() {
-            this.rotation.y += .01
-        }
-        scene.add(m);
-    }
-    )
-if (0)
-    glbLoader.load("../assets/kiwi.glb", (glb)=>{
-        enableShadows(glb.scene)
-        box = glb.scene.getObjectByName('box');
-        subMaterial = intersectMaterial = unionMaterial = box.material;
-        sphere = glb.scene.getObjectByName('kiwi');
-        difMaterial = sphere.material;
-    }
-    )
-
 renderer.setAnimationLoop(animate)
+
+
+
+new THREE.TextureLoader().load('./door.jpg',(tex)=>{
+    
+    let box = new THREE.Mesh(new THREE.BoxGeometry(),new THREE.MeshStandardMaterial({map:tex}));
+    let cutout = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1, 0.1),new THREE.MeshStandardMaterial({color:'#232323'}));
+    //scene.add(box,cutout)
+    cutout.position.set(0.45, 0, 0);
+    cutout.updateMatrixWorld(true);
+
+    let mesh = doCSG(box,cutout,'subtract',box.material,cutout.material);
+   
+})

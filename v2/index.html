@@ -4,7 +4,14 @@
     <title>Three.js CSG Toy</title><head>  
     <link rel="stylesheet" href="app3.css">
   </head>
-  <body>
+  <body>    
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.155.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.155.0/examples/jsm/"
+        }
+    }</script>
     <script type="module" src="csg-toy.js"></script>
     <script type="module" src="app3.js"></script>
     <div id='mainDiv'>
